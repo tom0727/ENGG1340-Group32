@@ -57,12 +57,14 @@ void registeraccount(){
       cout<<"please settle your password"<<endl;
       getline(cin,password);
       ofstream File ("users.txt",ofstream::app);
+      ofstream RecordFile ((username+"_Records.txt").c_str());
       if (File.fail()){
         cout<<"Fail to open users.txt"<<endl;
         exit(1);
       }
       File<<username<<"#"<<password<<endl;
       File.close();
+      RecordFile.close();
       cout<<"Registeration successful"<<endl;
       break;
     }

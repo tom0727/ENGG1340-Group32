@@ -4,7 +4,7 @@
 #include <iomanip>
 using namespace std;
 
-// skip the username_Records.txt now
+//class and struct names are captialized,variable names are not.
 
 class Record
 {
@@ -22,7 +22,7 @@ class Record
 
   private:
     float amount;
-    string time;
+    string time;  //time format is: "YYYY-MM-DD"
     string type; //such as "food"
     string method; //such as "cash"
     string remark;
@@ -72,13 +72,13 @@ string Record::get_remark()
 }
 
 
-struct RecordType  //RecordType is a struct
+struct RecordType  //RecordType is struct,contains type and corresponding count.
 {
   int count;
   string type;
 };
 
-struct RecordMethod
+struct RecordMethod  //RecordMethod is struct,contains method and corresponding count.
 {
   int count;
   string method;
@@ -89,8 +89,9 @@ int main()
   Record *recordList = new Record[100];  //recordList is a pointer,type is Record 
   RecordType *typeList = new RecordType[100];
   RecordMethod *methodList = new RecordMethod[100];
-  delete [] recordList;
-  delete [] typeList;
+
+  delete [] recordList; //These 3 delete are used only for testing
+  delete [] typeList;  //They may be put somewhere else in the complete program.
   delete [] methodList;
   return 0;
 }
