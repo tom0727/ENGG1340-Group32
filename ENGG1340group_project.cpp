@@ -2,6 +2,21 @@
 #include <fstream>
 #include <string>
 using namespace std;
+/*********************************************************************
+                        starting setup                              */
+void create_usertxt(){
+  ifstream F_test ("users.txt");
+  if (!F_test.good()){
+    F_test.close();
+    ofstream File("users.txt");
+    File.close();
+  }
+  else{
+    F_test.close();
+  }
+}
+
+//*******************************************************************************
 /* print the starting menu*/
 void printmenu(){
   int choice;
