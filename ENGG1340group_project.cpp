@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 using namespace std;
 /*********************************************************************
                         starting setup                              */
@@ -149,6 +150,7 @@ bool authentification(string &login_user){
 string login(){
   string login_user="";
   string choice;
+  create_usertxt();
   printmenu();
   while (login_user==""){
     getline(cin,choice);
