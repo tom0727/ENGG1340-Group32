@@ -79,8 +79,28 @@ struct RecordCategory //RecordCategory is struct,contains type and corresponding
   string category;
 };
 //***************************************************************************
-//function to use user record to fill in both typelist and record list
-void List_fill(RecordCategory *&List, int &List_length, string value){
+// function to extend the dynamic array of recordList and delete the old one
+void extend_array(RecordCategory *&List,int &List_length,int &max_List){
+  RecordCategory *newList= new RecordCategory[max_List*2];
+  max_List*=2;
+  for (int i=0;i<List_length;i++){
+    newList[i]=List[i];
+  }
+  delete List;
+  List=newList;
+}
+// argument overload function to entend the dynamic array of typeList and methodList and delete the old one
+void extend_array(Record *&List,int &length_recordList,int &max_recordList){
+  Record *newList= new Record[max_recordList*2];
+  max_recordList*=2;
+  for (int i=0;i<length_recordList;i++){
+    newList[i]=List[i];
+  }
+  delete List;
+  List=newList;
+}
+//function to use user record to fill in both typelist and method list
+void List_fill(RecordCategory *&List, int &List_length, string value,int &max_List){
   bool newtype=1;
   for (int i=0;i<List_length;i++){
     if (List[i].category==value){
@@ -92,11 +112,14 @@ void List_fill(RecordCategory *&List, int &List_length, string value){
   if (newtype==1){
     List[List_length]={1,value};
     List_length+=1;
+    if (List_length>=max_List){
+      extend_array(List,List_length,max_List);
+    }
   }
 }
 
 //extract information from user_record.txt and fill in recordList
-void load_userdata(string login_user, Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList){
+void load_userdata(string login_user, Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList,int &max_recordList,int &max_typeList,int &max_methodList){
    string record_line;
    ifstream record((login_user+"_record.txt").c_str());
    if (record.fail()){
@@ -121,8 +144,11 @@ void load_userdata(string login_user, Record *&recordList, RecordCategory *&type
      temp.set_remark(record_line.substr(seperator_position[3]+1,record_line.size()-seperator_position[3]-1));
      recordList[length_recordList]=temp;
      length_recordList+=1;
-     List_fill(typeList,length_typeList,current_type);
-     List_fill(methodList,length_methodList,current_method);
+     if (length_recordList>=max_recordList){
+       extend_array(recordList,length_recordList,max_recordList);
+     }
+     List_fill(typeList,length_typeList,current_type,max_typeList);
+     List_fill(methodList,length_methodList,current_method,max_methodList);
    }
   /*  Testing code leave with that
  for (int i=0;i<length_recordList;i++){
@@ -142,10 +168,13 @@ int main()
   Record *recordList = new Record[100];  //recordList is a pointer,type is Record
   RecordCategory *typeList = new RecordCategory[100];
   RecordCategory *methodList = new RecordCategory[100];
+  int max_recordList=100;
+  int max_typeList=100;
+  int max_methodList=100;
   int length_recordList=0;
   int length_typeList=0;
   int length_methodList=0;
-  load_userdata(login_user,recordList,typeList,methodList,length_recordList,length_typeList,length_methodList);
+  load_userdata(login_user,recordList,typeList,methodList,length_recordList,length_typeList,length_methodList,max_recordList,max_typeList,max_methodList);
   delete [] recordList; //These 3 delete are used only for testing
   delete [] typeList;  //They may be put somewhere else in the complete program.
   delete [] methodList;
