@@ -8,7 +8,7 @@
 using namespace std;
 
 //class and struct names are captialized,variable names are not.
-
+// the start of definition of data structure
 class Record
 {
   public:
@@ -92,8 +92,9 @@ void create_usertxt(){
     F_test.close();
   }
 }
-
+//                    The End of definition of data structure
 //*******************************************************************************
+//printing the login menu
 /* print the starting menu*/
 void printmenu(){
   cout<<"******************************"<<endl;
@@ -105,6 +106,7 @@ void printmenu(){
 }
 
 //***********************************************************************
+//******************** Start of the login program***************************************
 //Registration function
 
 /* check whether username_input is in the correct format
@@ -161,11 +163,11 @@ void registeraccount(){
     }
 }
 }
-/*                            END OF REGISTRATION function
-******************************************************************************
-Login function*/
+// ***********************      END OF REGISTRATION function***********************88
+//******************************************************************************
+//                      start of the login function*******************************
 
-// Find the user name in correct format and serach corresponding line in the user.txt//
+// Find the user name in correct format and serach corresponding line in the user.txt
 bool username_find(string &userrecord, string username){
   for (int i=0;i<username.size();i++){
     if (!((username[i]>=65 and  username[i]<=90) or (username[i]>=97 and  username[i]<=122) or (username[i]<=57 and username[i]>=48))){
@@ -219,9 +221,10 @@ bool authentification(string &login_user){
   }
   return 0;
 }
-/*                          END of Login program
-********************************************************************************/
-/* main function for part I */
+
+//                          END of Login function
+//********************************************************************************/
+// main function for part I
 string login(){
   string login_user="";
   string choice;
@@ -248,8 +251,9 @@ string login(){
   }
   return login_user;
 }
-
+//                    End of the login program
 //***************************************************************************
+// *************************start of the load data from file section(load function)  ******************
 // function to extend the dynamic array of recordList and delete the old one
 void extend_array(RecordCategory *&List,int &List_length,int &max_List){
   RecordCategory *newList= new RecordCategory[max_List*2];
@@ -333,6 +337,7 @@ void load_userdata(string login_user, Record *&recordList, RecordCategory *&type
      }    */
    record.close();
 }
+//                        End of the load data from file function
 //*************************************************************************************
 //print the second menu about the function avaliable for execution
 void print_menu2(){
@@ -343,6 +348,7 @@ void print_menu2(){
   cout<<"Please select the menu by entering corresponding number"<<endl;
 }
 //************************************************************************************
+// *****************************The start of the addition section***********************88
 //check whether the user input function are valid
 bool amount_check(string amount){
   for (int i=0;i<amount.length();i++){
@@ -425,8 +431,10 @@ void add(Record *&recordList, RecordCategory *&typeList ,RecordCategory *&method
   List_fill(typeList,length_typeList,type,max_typeList);
   List_fill(methodList,length_methodList,method,max_methodList);
 }
+//************************End of addition function*****************************************
 //********************************************************************************************
-//write data in to the
+// ************************The start of the write data in to user_record function(Ending funtion)***********
+//write data in to the user's individual record
 void write_data(string login_user, Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList,int &max_recordList,int &max_typeList,int &max_methodList){
   ofstream fin((login_user+"_record.txt").c_str());
   if (fin.fail()){
@@ -439,8 +447,9 @@ void write_data(string login_user, Record *&recordList, RecordCategory *&typeLis
      fin<<line<<endl;
   }
 }
-
+// The End of the write data in to user_record function(Ending funtion)
 //*********************************************************************************************
+//               main execution function
 int main()
 { string login_user=login();
   Record *recordList = new Record[100];  //recordList is a pointer,type is Record
