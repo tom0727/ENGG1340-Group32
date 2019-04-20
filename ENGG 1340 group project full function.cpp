@@ -94,6 +94,17 @@ void create_usertxt(){
 }
 //                    The End of definition of data structure
 //*******************************************************************************
+
+//  The start of definition of Helper Function
+bool isalnum(char c) //checking if the char is a Alphabet or number
+{
+  if ((username[i]>=65 and  username[i]<=90) or (username[i]>=97 and  username[i]<=122) or (username[i]<=57 and username[i]>=48))
+  {return True;}
+  else {return False;}
+}
+
+// The end of definition of Helper Function
+
 //printing the login menu
 /* print the starting menu*/
 void printmenu(){
@@ -115,7 +126,7 @@ void printmenu(){
 bool username_check (string username){
   // Perform selection 1
   for (int i=0;i<username.size();i++){
-    if (!((username[i]>=65 and  username[i]<=90) or (username[i]>=97 and  username[i]<=122) or (username[i]<=57 and username[i]>=48))){
+    if (!isalnum(username[i])){
       cout<<"Username could only consist of digit and Alphabet"<<endl;
       return 0;
     }
@@ -155,7 +166,8 @@ void registeraccount(){
         cout<<"Fail to open users.txt"<<endl;
         exit(1);
       }
-      File<<username<<"#"<<password<<endl;
+      File<<username<<"#"<<password<<endl; 
+      File<<"0#0#0"<<endl;//initialize income,expense,budget to 0
       File.close();
       RecordFile.close();
       cout<<"Registeration successful"<<endl;
@@ -168,10 +180,10 @@ void registeraccount(){
 //                      start of the login function*******************************
 
 // Find the user name in correct format and serach corresponding line in the user.txt
-bool username_find(string &userrecord, string username){
+bool username_find(string &userrecord, string username,string &user_data){
   for (int i=0;i<username.size();i++){
-    if (!((username[i]>=65 and  username[i]<=90) or (username[i]>=97 and  username[i]<=122) or (username[i]<=57 and username[i]>=48))){
-      cout<<"Invalid username.Username could only consist of digit and Alphabet"<<endl;
+    if (!isalnum(username[i])){
+        cout<<"Invalid username.Username could only consist of digit and Alphabet"<<endl;
       return 0;
     }
   }
@@ -183,6 +195,7 @@ bool username_find(string &userrecord, string username){
   while (getline(fin,file_line)){
     if ((file_line.find(username)==0) and (file_line.substr(username.size(),1)=="#")){
       userrecord=file_line;
+      getline(fin,user_data);
       return 1;
     }
   }
@@ -191,21 +204,23 @@ bool username_find(string &userrecord, string username){
 }
 
 //To check whether the username and password match. Prompt username and password input
-bool authentification(string &login_user){
+bool authentification(string &login_user,string &user_data){
   string userrecord;
   string password;
   string username;
+  string userdata;
   cout<<"*********************************"<<endl;
   cout<<"Login:"<<endl;
   cout<<"Please input your username"<<endl;
   while (true){
     getline(cin,username);
-    if (username_find(userrecord,username)){
+    if (username_find(userrecord,username,userdata)){
       cout<<"Please input the password"<<endl;
       getline(cin,password);
       if (username+"#"+password==userrecord){
         cout<<"Login successful"<<endl;
         login_user=username;
+        user_data=userdata;
         return 1;
       }
       else{
@@ -227,6 +242,7 @@ bool authentification(string &login_user){
 // main function for part I
 string login(){
   string login_user="";
+  string user_data="";
   string choice;
   create_usertxt();
   printmenu();
@@ -237,7 +253,7 @@ string login(){
         printmenu();
       }
     else if (choice=="2"){
-      if (authentification(login_user)){
+      if (authentification(login_user,user_data)){
         break;
       }
       printmenu();
@@ -294,7 +310,7 @@ void List_fill(RecordCategory *&List, int &List_length, string value,int &max_Li
 }
 
 //extract information from user_record.txt and fill in recordList
-void load_userdata(string login_user, Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList,int &max_recordList,int &max_typeList,int &max_methodList){
+void load_userdata(string login_user, Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList,int &max_recordList,int &max_typeList,int &max_methodList,float &income, float &expense, float &budget){
    string record_line;
    ifstream record((login_user+"_record.txt").c_str());
    if (record.fail()){
@@ -311,6 +327,8 @@ void load_userdata(string login_user, Record *&recordList, RecordCategory *&type
        record_line.replace(seperator_position[i],1,"~");
      }
      temp.set_amount(stof((record_line.substr(0,seperator_position[0])).c_str()));
+     if (temp.get_amount>0) {income += temp.get_amount;}  //load to update income
+     else if (temp.get_amount<0) {expense += temp.get_amount;}  //load to update expense
      temp.set_time(record_line.substr(seperator_position[0]+1,seperator_position[1]-seperator_position[0]-1));
      current_type=record_line.substr(seperator_position[1]+1,seperator_position[2]-seperator_position[1]-1);
      temp.set_type(current_type);
@@ -367,8 +385,8 @@ bool time_check(string time){
       return 0;
     }
   }
-  if (time.substr(4,2)>"12" or time.substr(4,2)<"01"){ return 0;}
-  if (time.substr(6,2)>"31" or time.substr(6,2)<"01"){ return 0;}
+  if (time.substr(4,2)>"12" or time.substr(4,2)<"01"){ return 0;} //check if "month" is valid
+  if (time.substr(6,2)>"31" or time.substr(6,2)<"01"){ return 0;} //check if "day" is valid
   return 1;
 }
 
@@ -376,9 +394,9 @@ bool time_check(string time){
 void prompt_add_input(float &amount,string &time,string &type,string &method,string &remark){
   string s_amount;
   string choice_ei;
-  //get the type: expenditure or income
+  //get the type: expense or income
   cout<<"Please indicate type of record"<<endl;
-  cout<<"1.Expenditure"<<endl;
+  cout<<"1.Expense"<<endl;
   cout<<"2.Income"<<endl;
   getline(cin,choice_ei);
   while (choice_ei!="1" && choice_ei!="2"){
@@ -396,7 +414,7 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   if (choice_ei=="1"){amount=stof("-"+s_amount);}
   else{amount=stof("+"+s_amount);}
   //get the time
-  cout<<"Please enter the year month date by following exactly format: YYYYDDMM"<<endl;
+  cout<<"Please enter the year month date by following exactly format: YYYYMMDD"<<endl;
   getline(cin,time);
   while (!time_check(time)){
     getline(cin,time);
@@ -404,9 +422,9 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   }
   time=time.substr(0,4)+"-"+time.substr(4,2)+"-"+time.substr(6,2);
   //get type/method/remark
-  cout<<"Please input the type of expenditure/income"<<endl;
+  cout<<"Please input the type of expense/income"<<endl;
   getline(cin,type);
-  cout<<"Please input the payment method of expenditure/income"<<endl;
+  cout<<"Please input the payment method of expense/income"<<endl;
   getline(cin,method);
   cout<<"Please add some remark to the record"<<endl;
   getline(cin,remark);
@@ -435,23 +453,24 @@ void add(Record *&recordList, RecordCategory *&typeList ,RecordCategory *&method
 //********************************************************************************************
 // ************************The start of the write data in to user_record function(Ending funtion)***********
 //write data in to the user's individual record
-void write_data(string login_user, Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList,int &max_recordList,int &max_typeList,int &max_methodList){
-  ofstream fin((login_user+"_record.txt").c_str());
+void write_data(string login_user, Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList,int &max_recordList,int &max_typeList,int &max_methodList,float &income, float &expense, float &budget){
+  ofstream fin((login_user+"_record.txt").c_str(),ios:app);
   if (fin.fail()){
     cout<<"fail to open "<<login_user<<"_record.txt"<<endl;
     exit(1);
   }
   for (int i=0;i<length_recordList;i++){
-     string line;
-     line=to_string(recordList[i].get_amount())+"|"+recordList[i].get_time()+"|"+recordList[i].get_type()+"|"+recordList[i].get_method()+"|"+recordList[i].get_remark();
-     fin<<line<<endl;
+    string line;
+    line=to_string(recordList[i].get_amount())+"|"+recordList[i].get_time()+"|"+recordList[i].get_type()+"|"+recordList[i].get_method()+"|"+recordList[i].get_remark();
+    fin<<line<<endl;
   }
 }
 // The End of the write data in to user_record function(Ending funtion)
 //*********************************************************************************************
 //               main execution function
 int main()
-{ string login_user=login();
+{ 
+  string login_user=login();
   Record *recordList = new Record[100];  //recordList is a pointer,type is Record
   RecordCategory *typeList = new RecordCategory[100];
   RecordCategory *methodList = new RecordCategory[100];
@@ -461,7 +480,8 @@ int main()
   int length_recordList=0;
   int length_typeList=0;
   int length_methodList=0;
-  load_userdata(login_user,recordList,typeList,methodList,length_recordList,length_typeList,length_methodList,max_recordList,max_typeList,max_methodList);
+  float income=0,expense=0,budget=0;
+  load_userdata(login_user,recordList,typeList,methodList,length_recordList,length_typeList,length_methodList,max_recordList,max_typeList,max_methodList,income,expense,budget);
   // The overall menu of function avaliable for execution after login
   string choice;
   print_menu2();
@@ -472,7 +492,7 @@ int main()
       print_menu2();
       }
     else if (choice=="2"){
-      write_data(login_user,recordList,typeList,methodList,length_recordList,length_typeList,length_methodList,max_recordList,max_typeList,max_methodList);
+      write_data(login_user,recordList,typeList,methodList,length_recordList,length_typeList,length_methodList,max_recordList,max_typeList,max_methodList,income,expense,budget);
       break;
       }
     else {
@@ -480,16 +500,14 @@ int main()
     }
   }
   for (int i=0;i<length_recordList;i++){
-        cout<<(recordList[i]).amount<<" "<<(recordList[i]).time<<" "<<(recordList[i]).type<<" "<<(recordList[i]).method<<" "<<(recordList[i]).remark<<" "<<endl;
-      }
+    cout<<(recordList[i]).amount<<" "<<(recordList[i]).time<<" "<<(recordList[i]).type<<" "<<(recordList[i]).method<<" "<<(recordList[i]).remark<<" "<<endl;
+  }
   for (int i=0;i<length_typeList;i++){
-        cout<<(typeList[i]).category<<" "<<(typeList[i]).count<<endl;
-      }
+    cout<<(typeList[i]).category<<" "<<(typeList[i]).count<<endl;
+  }
   for (int i=0;i<length_methodList;i++){
-        cout<<(methodList[i]).category<<" "<<(methodList[i]).count<<endl;
-      }
-
-
+    cout<<(methodList[i]).category<<" "<<(methodList[i]).count<<endl;
+  }
 
 
 /*  delete [] recordList; //These 3 delete are used only for testing
