@@ -1,7 +1,23 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 using namespace std;
+/*********************************************************************
+                        starting setup                              */
+void create_usertxt(){
+  ifstream F_test ("users.txt");
+  if (!F_test.good()){
+    F_test.close();
+    ofstream File("users.txt");
+    File.close();
+  }
+  else{
+    F_test.close();
+  }
+}
+
+//*******************************************************************************
 /* print the starting menu*/
 void printmenu(){
   int choice;
@@ -134,6 +150,7 @@ bool authentification(string &login_user){
 string login(){
   string login_user="";
   string choice;
+  create_usertxt();
   printmenu();
   while (login_user==""){
     getline(cin,choice);
