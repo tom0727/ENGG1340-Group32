@@ -8,6 +8,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
+#include <algorithm>
+#include <math.h>
 using namespace std;
 
 //class and struct names are captialized,variable names are not.
@@ -327,15 +329,17 @@ void print_menu2(){
   cout<<"*************************************"<<endl;
   cout<<"Function needed to be choose"<<endl;
   cout<<"1.Add"<<endl;
-  cout<<"2.Exit"<<endl;
+  cout<<"2.Show"<<endl;
+  cout<<"3.Exit"<<endl;
   cout<<"Please select the menu by entering corresponding number"<<endl;
 }
 //************************************************************************************
 // *****************************The start of the addition section***********************88
 //check whether the user input function are valid
 bool amount_check(string amount){
+  if (amount[0]!='+' || amount[0]!='-'){return 0;}
   int dot_count=0;
-  for (int i=0;i<amount.length();i++){
+  for (int i=1;i<amount.length();i++){
     if (!isdigit(amount[i]) && amount[i]!='.'){
       return 0;
     }
@@ -346,6 +350,8 @@ bool amount_check(string amount){
       return 0;
     }
   }
+  float number=stof(amount);
+  if (number==0){return 0;}
   return 1;
 }
 
@@ -371,17 +377,8 @@ void transform_lower (string &content){
 void prompt_add_input(float &amount,string &time,string &type,string &method,string &remark){
   string s_amount;
   string choice_ei;
-  //get the type: expense or income
-  cout<<"Please indicate type of record"<<endl;
-  cout<<"1.Expense"<<endl;
-  cout<<"2.Income"<<endl;
-  getline(cin,choice_ei);
-  while (choice_ei!="1" && choice_ei!="2"){
-      cout<<"Invalid option please input again"<<endl;
-      getline(cin,choice_ei);
-  }
   // get the amount
-  cout<<"Please indicate the amount"<<endl;
+  cout<<"Please indicate the amount: + means income /- menas expenditure"<<endl;
   getline(cin,s_amount);
   while (!amount_check(s_amount)){
     cout<<"Invalid amount please input again"<<endl;
@@ -433,6 +430,213 @@ void add(vector<Record> &recordList,vector<RecordCategory> &typeList, vector<Rec
   List_fill(methodList,method);
 }
 //************************End of addition function*****************************************
+//********************************************************************************************
+//**********************The start of the show function***************************************
+bool int_check(string amount){
+  for (int i=0;i<amount.length();i++){
+    if (!isdigit(amount[i])){
+      return 0;
+    }
+  }
+  return 1;
+}
+
+void show_menu()
+{
+  cout << "**************************************" << endl;
+  cout << "You are now asking to show Records" << endl;
+  cout << "Please enter an integer or char to select" << endl;
+  cout << "1.show by Date" << endl;
+  cout << "2.show by Amount" << endl;
+  cout << "3.show by Method" << endl;
+  cout << "4.show by Type" << endl;
+  cout << "5.search by Date" << endl;
+  cout << "6.search by Amount" << endl;
+  cout << "7.search by Method" << endl;
+  cout << "8.search by Type" << endl;
+  cout << "d.delete records" << endl;
+  cout << "e.edit records" << endl;
+  cout << "9.Exit" << endl;
+}
+
+void show_record(vector<Record> &recordList,int &i)
+{
+  cout<<i<<" "<<(recordList[i]).get_amount()<<" "<<(recordList[i]).get_time()<<" "<<(recordList[i]).get_type()<<" "<<(recordList[i]).get_method()<<" "<<(recordList[i]).get_remark()<<" "<<endl;
+}
+
+bool compareTime(Record &r1,Record &r2)
+{ return (r1.get_time() > r2.get_time()); }  //From new to old time
+
+bool compareAmount(Record &r1,Record &r2)
+{ return (r1.get_amount() > r2.get_amount()); }  //From big to small amount
+
+bool compareMethod(Record &r1,Record &r2)
+{ return (r1.get_method() < r2.get_method()); }
+
+bool compareType(Record &r1,Record &r2)
+{ return (r1.get_type() < r2.get_type()); }
+
+void sort_time(vector<Record> &recordList)
+{
+  sort(recordList.begin(),recordList.end(),compareTime);
+  for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
+}
+
+void sort_amount(vector<Record> &recordList)
+{
+  sort(recordList.begin(),recordList.end(),compareAmount);
+  for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
+}
+
+void sort_method(vector<Record> &recordList)
+{
+  sort(recordList.begin(),recordList.end(),compareMethod);
+  for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
+}
+
+void sort_type(vector<Record> &recordList)
+{
+  sort(recordList.begin(),recordList.end(),compareType);
+  for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
+}
+
+void search_time(vector<Record> &recordList)
+{
+  cout << "Please enter a time interval you want to search for:(The format is YYYYMMDD)" << endl;
+  cout << "Start time: ";
+  string starttime,endtime;
+  getline(cin,starttime);
+  while (!time_check(starttime))  //time_check function is in another file
+  {
+    cout << "Invalid input" << endl;
+    getline (cin,starttime);
+  }
+
+  cout << "End time: ";
+  getline(cin,endtime);
+  while (!time_check(endtime))  //time_check function is in another file
+  {
+    cout << "Invalid input" << endl;
+    getline (cin,endtime);
+  }
+  starttime=starttime.substr(0,4)+"-"+starttime.substr(4,2)+"-"+starttime.substr(6,2);
+  endtime=endtime.substr(0,4)+"-"+endtime.substr(4,2)+"-"+endtime.substr(6,2);
+  for (int i=0;i<recordList.size();i++)  //assume it is a vector
+  {
+    if (recordList[i].get_time()>=starttime && recordList[i].get_time()<=endtime)
+    {
+      show_record(recordList,i);
+    }
+  }
+}
+
+void search_amount(vector<Record> &recordList)  //search according to an amount interval
+{
+  cout << "Please enter an amount interval you want to search for:" << endl;
+  string low,high;
+  cout << "Lower amount: ";
+  getline(cin,low);
+  while (!amount_check(low))
+  {
+    cout << "Invalid input" << endl;
+    getline (cin,low);
+  }
+
+  cout << "Higher amount: ";
+  getline(cin,high);
+  while (!amount_check(high))
+  {
+    cout << "Invalid input" << endl;
+    getline (cin,high);
+  }
+
+  float l=stof(low),h=stof(high);
+
+  for (int i=0;i<recordList.size();i++)  //assume it is a vector
+  {
+    if (fabs(recordList[i].get_amount()) >= l && fabs(recordList[i].get_amount()) <= h)  //using absolute value
+    {show_record(recordList,i);}
+  }
+}
+
+void search_method(vector<Record> &recordList,vector<RecordCategory> &methodList)
+{
+  cout << "Please enter a method you want to search for:" << endl;
+  cout << "These are the existing method:" << endl;
+  for (int i=0;i<methodList.size();i++)
+  {
+    cout << methodList[i].category <<endl;  //showing existing method
+  }
+  cout << endl;
+  string method;
+  getline(cin,method);
+  transform_lower(method);  //transform "method" into lower case
+  for (int i=0;i<recordList.size();i++)  //assume it is a vector
+  {
+    if (recordList[i].get_method() == method)
+    {
+      show_record(recordList,i);
+    }
+  }
+}
+
+void search_type(vector<Record> &recordList,vector<RecordCategory> &typeList)
+{
+  cout << "Please enter a type you want to search for:" << endl;
+  cout << "These are the existing type:" << endl;
+  for (int i=0;i<typeList.size();i++)
+  {
+    cout << typeList[i].category <<endl;  //showing existing type
+  }
+  cout << endl;
+  string type;
+  getline(cin,type);
+  transform_lower(type);  //transform "type" into lower case
+  for (int i=0;i<recordList.size();i++)  //assume it is a vector
+  {
+    if (recordList[i].get_type() == type)
+    {show_record(recordList,i);}
+  }
+}
+
+/*void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,vector<Record> &methodList, vector<Record> &typeList)
+{
+  sort_time(recordList);
+  cout << "You are now in the edit mode,please enter the corresponding integer to edit record" << endl;
+  string input;
+  getline(cin,input);
+  while (!int_check(input))
+  {
+    cout << "Invalid input, please enter again" << endl;
+    getline(cin,input);
+  }
+  index
+
+
+} */
+
+
+void show(float &income,float &expense,float &budget,vector<Record> &recordList,vector<RecordCategory> &methodList, vector<RecordCategory> &typeList)
+{
+  string choice;
+  while (true)
+  {
+    show_menu();
+    getline(cin,choice);
+    if(choice=="1") {sort_time(recordList);}
+    else if(choice=="2") {sort_amount(recordList);}
+    else if(choice=="3") {sort_method(recordList);}
+    else if(choice=="4") {sort_type(recordList);}
+    else if(choice=="5") {search_time(recordList);}
+    else if(choice=="6") {search_amount(recordList);}
+    else if(choice=="7") {search_method(recordList,methodList);}
+    else if(choice=="8") {search_type(recordList,typeList);}
+    else if(choice=="9") {break;}
+  /*  else if(choice=="d") {delete_mode();}
+    else if(choice=="e") {edit_mode();}*/
+    else {cout << "Invalid option,please enter again" << endl;}
+  }
+}
 //********************************************************************************************
 // ************************The start of the write data in to user_record function(Ending funtion)***********
 //write data in to the user's individual record
@@ -492,9 +696,13 @@ int main()
       print_menu2();
       }
     else if (choice=="2"){
+      show(user_income,user_expenditure,user_budget,recordList,methodList,typeList);
+      print_menu2();
+      }
+    else if (choice=="3"){
       write_data(login_user,recordList,user_budget,user_income,user_expenditure);
       break;
-      }
+    }
     else {
       cout<<"please input valid choice"<<endl;
     }
