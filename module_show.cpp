@@ -180,6 +180,69 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
 
 }
 
+void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,vector<RecordCategory> &methodList, vector<RecordCategory> &typeList)
+{
+  void sort_time(recordList);
+  cout << "You are now in the edit mode,please enter the corresponding integer to edit record" << endl;
+  string input;
+  getline(cin,input);
+  while (!int_check(input)) 
+  {
+    cout << "Invalid input, please enter again" << endl;
+    getline(cin,input);
+  }
+  int i = stoi(input);
+  show_record(recordList,i);
+  cout << "Please edit the record, if you want to keep the origin data, please press Enter" << endl;
+
+  cout << "Please enter the Amount(positive means income,negative means expense):";
+  getline(cin,input);
+  while (!amount_check(input))
+  {
+    cout << "Invalid input, please enter again" << endl;
+    getline(cin,input);
+  }
+  if (input.size()==0);
+  else 
+  {
+    float oldamount = recordList[i].get_amount();
+    float newamount = stof(input);
+    if (oldamount<0) {expense-=oldamount;}
+    else if (oldamount>0) {income-=oldamount;}
+    if (newamount<0) {expense+=newamount;}
+    else if (newamount>0) {income+=newamount;}
+    recordList[i].set_amount(newamount);
+  }
+
+  cout << "Please enter the Date:(Format:YYYYMMDD)";
+  getline(cin,input);
+  while (!time_check(input))
+  {
+    cout << "Invalid input, please enter again" << endl;
+    getline(cin,input);
+  }
+  if (input.size()==0);
+  else {recordList[i].set_time(input);}
+
+  cout << "Please enter the Method:";
+  getline(cin,input);
+  if (input.size()==0);
+  else {recordList[i].set_method(input); List_fill(methodList,input);}
+
+  cout << "Please enter the Type:";
+  getline(cin,input);
+  if (input.size()==0);
+  else {recordList[i].set_type(input); List_fill(typeList,input);}
+
+  cout << "Please enter the Remark:";
+  getline(cin,input);
+  if (input.size()==0);
+  else {recordList[i].set_remark(input);}
+
+}
+
+
+
 
 void show(float &income,float &expense,float &budget,vector<Record> &recordList,vector<Record> &methodList, vector<Record> &typeList)
 {
