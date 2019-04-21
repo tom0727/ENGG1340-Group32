@@ -6,6 +6,8 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
+#include <vector>
 using namespace std;
 
 //class and struct names are captialized,variable names are not.
@@ -157,9 +159,9 @@ bool username_check (string username){
 void registeraccount(){
   string username;
   string password;
+  cout<<"******************************"<<endl;
+  cout<<"Registration:"<<endl;
   while (true){
-    cout<<"******************************"<<endl;
-    cout<<"Registration:"<<endl;
     cout<<"please settle your username, username should only contain Alphabet or digit"<<endl;
     getline(cin,username);
     if (username_check(username)==true){
@@ -272,30 +274,10 @@ void login(string &login_user,float &user_budget,float &user_income,float &user_
 //                    End of the login program
 //***************************************************************************
 // *************************start of the load data from file section(load function)  ******************
-// function to extend the dynamic array of recordList and delete the old one
-void extend_array(RecordCategory *&List,int &List_length,int &max_List){
-  RecordCategory *newList= new RecordCategory[max_List*2];
-  max_List*=2;
-  for (int i=0;i<List_length;i++){
-    newList[i]=List[i];
-  }
-  delete List;
-  List=newList;
-}
-// argument overload function to entend the dynamic array of typeList and methodList and delete the old one
-void extend_array(Record *&List,int &length_recordList,int &max_recordList){
-  Record *newList= new Record[max_recordList*2];
-  max_recordList*=2;
-  for (int i=0;i<length_recordList;i++){
-    newList[i]=List[i];
-  }
-  delete List;
-  List=newList;
-}
 //function to use user record to fill in both typelist and method list
-void List_fill(RecordCategory *&List, int &List_length, string value,int &max_List){
+void List_fill(vector <RecordCategory> &List,string value){
   bool newtype=1;
-  for (int i=0;i<List_length;i++){
+  for (int i=0;i<List.size();i++){
     if (List[i].category==value){
       List[i].count+=1;
       newtype=0;
@@ -303,16 +285,13 @@ void List_fill(RecordCategory *&List, int &List_length, string value,int &max_Li
     }
   }
   if (newtype==1){
-    List[List_length]={1,value};
-    List_length+=1;
-    if (List_length>=max_List){
-      extend_array(List,List_length,max_List);
-    }
+    RecordCategory temp={1,value};
+    List.push_back(temp);
   }
 }
 
 //extract information from user_record.txt and fill in recordList
-void load_userdata(string login_user, Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList,int &max_recordList,int &max_typeList,int &max_methodList){
+void load_userdata(string login_user,   vector<Record> &recordList,  vector<RecordCategory> &typeList, vector<RecordCategory> &methodList){
    string record_line;
    ifstream record((login_user+"_record.txt").c_str());
    if (record.fail()){
@@ -335,13 +314,9 @@ void load_userdata(string login_user, Record *&recordList, RecordCategory *&type
      current_method=record_line.substr(seperator_position[2]+1,seperator_position[3]-seperator_position[2]-1);
      temp.set_method(current_method);
      temp.set_remark(record_line.substr(seperator_position[3]+1,record_line.size()-seperator_position[3]-1));
-     recordList[length_recordList]=temp;
-     length_recordList+=1;
-     if (length_recordList>=max_recordList){
-       extend_array(recordList,length_recordList,max_recordList);
-     }
-     List_fill(typeList,length_typeList,current_type,max_typeList);
-     List_fill(methodList,length_methodList,current_method,max_methodList);
+     recordList.push_back(temp);
+     List_fill(typeList,current_type);
+     List_fill(methodList,current_method);
    }
    record.close();
 }
@@ -437,7 +412,7 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
 }
 
 // add record from user
-void add(Record *&recordList, RecordCategory *&typeList ,RecordCategory *&methodList,int &length_recordList, int &length_typeList,int &length_methodList,int &max_recordList,int &max_typeList,int &max_methodList,float &user_budget, float &user_income, float &user_expenditure){
+void add(vector<Record> &recordList,vector<RecordCategory> &typeList, vector<RecordCategory> &methodList, float &user_income, float &user_expenditure){
   string time,type,method,remark;
   float amount;
   prompt_add_input(amount,time,type,method,remark);
@@ -453,26 +428,22 @@ void add(Record *&recordList, RecordCategory *&typeList ,RecordCategory *&method
   temp.set_type(type);
   temp.set_method(method);
   temp.set_remark(remark);
-  recordList[length_recordList]=temp;
-  length_recordList+=1;
-  if (length_recordList>=max_recordList){
-    extend_array(recordList,length_recordList,max_recordList);
-  }
-  List_fill(typeList,length_typeList,type,max_typeList);
-  List_fill(methodList,length_methodList,method,max_methodList);
+  recordList.push_back(temp);
+  List_fill(typeList,type);
+  List_fill(methodList,method);
 }
 //************************End of addition function*****************************************
 //********************************************************************************************
 // ************************The start of the write data in to user_record function(Ending funtion)***********
 //write data in to the user's individual record
-void write_data(string login_user, Record *&recordList, int &length_recordList,float &user_budget, float &user_income, float &user_expenditure){
+void write_data(string login_user, vector <Record> &recordList,float &user_budget, float &user_income, float &user_expenditure){
   //write to update user_record.txt
   ofstream fin((login_user+"_record.txt").c_str());
   if (fin.fail()){
     cout<<"fail to open "<<login_user<<"_record.txt"<<endl;
     exit(1);
   }
-  for (int i=0;i<length_recordList;i++){
+  for (int i=0;i<recordList.size();i++){
     string line;
     line=to_string(recordList[i].get_amount())+"|"+recordList[i].get_time()+"|"+recordList[i].get_type()+"|"+recordList[i].get_method()+"|"+recordList[i].get_remark();
     fin<<line<<endl;
@@ -497,7 +468,7 @@ void write_data(string login_user, Record *&recordList, int &length_recordList,f
   user_file.close();
   char user_file_char []="users.txt";
   remove(user_file_char);
-  rename("temp.txt", user_file_char)<<endl;
+  rename("temp.txt", user_file_char);
   cout<<"Logout successfully"<<endl;
 }
 // The End of the write data in to user_record function(Ending funtion)
@@ -506,48 +477,38 @@ void write_data(string login_user, Record *&recordList, int &length_recordList,f
 int main()
 { string login_user="";
   float user_budget,user_income,user_expenditure;
-  Record *recordList = new Record[100];  //recordList is a pointer,type is Record
-  RecordCategory *typeList = new RecordCategory[100];
-  RecordCategory *methodList = new RecordCategory[100];
-  int max_recordList=100;
-  int max_typeList=100;
-  int max_methodList=100;
-  int length_recordList=0;
-  int length_typeList=0;
-  int length_methodList=0;
-  float income=0,expense=0,budget=0;
+  vector<Record> recordList;
+  vector<RecordCategory> typeList;
+  vector<RecordCategory> methodList;
   login(login_user,user_budget,user_income,user_expenditure);
-  load_userdata(login_user,recordList,typeList,methodList,length_recordList,length_typeList,length_methodList,max_recordList,max_typeList,max_methodList);
+  load_userdata(login_user,recordList,typeList,methodList);
   // The overall menu of function avaliable for execution after login
   string choice;
   print_menu2();
   while (true){
     getline(cin,choice);
     if (choice=="1"){
-      add(recordList,typeList,methodList,length_recordList,length_typeList,length_methodList,max_recordList,max_typeList,max_methodList,user_budget,user_income,user_expenditure);
+      add(recordList,typeList,methodList,user_income,user_expenditure);
       print_menu2();
       }
     else if (choice=="2"){
-      write_data(login_user,recordList,length_recordList,user_budget,user_income,user_expenditure);
+      write_data(login_user,recordList,user_budget,user_income,user_expenditure);
       break;
       }
     else {
       cout<<"please input valid choice"<<endl;
     }
   }
-/*  for (int i=0;i<length_recordList;i++){
-    cout<<(recordList[i]).amount<<" "<<(recordList[i]).time<<" "<<(recordList[i]).type<<" "<<(recordList[i]).method<<" "<<(recordList[i]).remark<<" "<<endl;
+  for (int i=0;i<recordList.size();i++){
+    cout<<(recordList[i]).get_amount()<<" "<<(recordList[i]).get_time()<<" "<<(recordList[i]).get_type()<<" "<<(recordList[i]).get_method()<<" "<<(recordList[i]).get_remark()<<" "<<endl;
   }
-  for (int i=0;i<length_typeList;i++){
+  for (int i=0;i<typeList.size();i++){
     cout<<(typeList[i]).category<<" "<<(typeList[i]).count<<endl;
   }
-  for (int i=0;i<length_methodList;i++){
+  for (int i=0;i<methodList.size();i++){
     cout<<(methodList[i]).category<<" "<<(methodList[i]).count<<endl;
   }
 
 
-/*  delete [] recordList; //These 3 delete are used only for testing
-  delete [] typeList;  //They may be put somewhere else in the complete program.
-  delete [] methodList;*/
   return 0;
 }
