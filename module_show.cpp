@@ -124,14 +124,13 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
   }
 }
 
-void search_method(vector<Record> &recordList,vector<RecordCategory> &methodList)
+void search_method(vector<Record> &recordList,map<string,int> &methodList)
 {
   cout << "Please enter a method you want to search for:" << endl;
   cout << "These are the existing method:" << endl;
-  for (int i=0;i<methodList.size();i++)
-  {
-    cout << methodList[i].category << " ";  //showing existing method
-  }
+  map::iterator itr;
+  for (itr = methodList.begin();itr!=methodList.end();itr++)
+  {cout << (*itr).first << " ";}  //showing existing method
   cout << endl;
   string method;
   getline(cin,method);
@@ -139,20 +138,17 @@ void search_method(vector<Record> &recordList,vector<RecordCategory> &methodList
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
   {
     if (recordList[i].get_method() == method)
-    {
-      show_record(recordList,i);
-    }
+    {show_record(recordList,i);}
   }
 }
 
-void search_type(vector<Record> &recordList,vector<RecordCategory> &typeList)
+void search_type(vector<Record> &recordList,map<string,int> &typeList)
 {
   cout << "Please enter a type you want to search for:" << endl;
   cout << "These are the existing type:" << endl;
-  for (int i=0;i<typeList.size();i++)
-  {
-    cout << typeList[i].category << " ";  //showing existing type
-  }
+  map::iterator itr;
+  for (itr=typeList.begin();itr!=typeList.end();itr++)
+  {cout << (*itr).first << " ";}  //showing existing type
   cout << endl;
   string type;
   getline(cin,type);
@@ -164,23 +160,21 @@ void search_type(vector<Record> &recordList,vector<RecordCategory> &typeList)
   }
 }
 
-void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,vector<Record> &methodList, vector<Record> &typeList)
+void update_map(map<string,int> &m,string key,int change)
 {
-  void sort_time(recordList);
-  cout << "You are now in the edit mode,please enter the corresponding integer to edit record" << endl;
-  string input;
-  getline(cin,input);
-  while (!int_check(input)) 
+  if (change==1)
   {
-    cout << "Invalid input, please enter again" << endl;
-    getline(cin,input);
+    if (m.count(key)==0) {m[key]=1;}
+    else {m[key]+=1;}
   }
-  index
-
-
+  else if (change==-1)
+  {
+    if (m[key]==1) {m.erase(key);}
+    else {m[key]-=1;}
+  }
 }
 
-void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,vector<RecordCategory> &methodList, vector<RecordCategory> &typeList)
+void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
   void sort_time(recordList);
   cout << "You are now in the edit mode,please enter the corresponding integer to edit record" << endl;
@@ -227,24 +221,34 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
   cout << "Please enter the Method:";
   getline(cin,input);
   if (input.size()==0);
-  else {recordList[i].set_method(input); List_fill(methodList,input);}
+  else 
+  {
+    string oldmethod = recordList[i].get_method();
+    string newmethod = input;
+    update_map(methodList,oldmethod,-1);
+    update_map(methodList,newmethod,1);
+    recordList[i].set_method(input); 
+  }
 
   cout << "Please enter the Type:";
   getline(cin,input);
   if (input.size()==0);
-  else {recordList[i].set_type(input); List_fill(typeList,input);}
+  else 
+  {
+    string oldtype = recordList[i].get_type();
+    string newtype = input;
+    update_map(typeList,oldtype,-1);
+    update_map(typeList,newtype,1);
+    recordList[i].set_type(input);
+  }
 
   cout << "Please enter the Remark:";
   getline(cin,input);
   if (input.size()==0);
   else {recordList[i].set_remark(input);}
-
 }
 
-
-
-
-void show(float &income,float &expense,float &budget,vector<Record> &recordList,vector<Record> &methodList, vector<Record> &typeList)
+void show(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
   string choice;
   bool stop = false;
