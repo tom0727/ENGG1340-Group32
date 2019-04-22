@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include <math.h>
+#include <map>
 using namespace std;
 
 //class and struct names are captialized,variable names are not.
@@ -78,13 +79,6 @@ string Record::get_remark()
 {
   return remark;
 }
-
-
-struct RecordCategory //RecordCategory is struct,contains type and corresponding count.
-{
-  int count;
-  string category;
-};
 
 
 //                    The End of definition of data structure
@@ -277,23 +271,14 @@ void login(string &login_user,float &user_budget,float &user_income,float &user_
 //***************************************************************************
 // *************************start of the load data from file section(load function)  ******************
 //function to use user record to fill in both typelist and method list
-void List_fill(vector <RecordCategory> &List,string value){
+void List_fill(map <string,int> &List,string value){
   bool newtype=1;
-  for (int i=0;i<List.size();i++){
-    if (List[i].category==value){
-      List[i].count+=1;
-      newtype=0;
-      break;
-    }
-  }
-  if (newtype==1){
-    RecordCategory temp={1,value};
-    List.push_back(temp);
-  }
+  if (List.count(value)){List[value]+=1;}
+  else { List[value]=1;}
 }
 
 //extract information from user_record.txt and fill in recordList
-void load_userdata(string login_user,   vector<Record> &recordList,  vector<RecordCategory> &typeList, vector<RecordCategory> &methodList){
+void load_userdata(string login_user,  vector<Record> &recordList,  map <string,int> &typeList, map <string,int> &methodList){
    string record_line;
    ifstream record((login_user+"_record.txt").c_str());
    if (record.fail()){
@@ -330,28 +315,29 @@ void print_menu2(){
   cout<<"Function needed to be choose"<<endl;
   cout<<"1.Add"<<endl;
   cout<<"2.Show"<<endl;
-  cout<<"3.Exit"<<endl;
+  cout<<"3.Financial Report"<<endl;
+  cout<<"4.Exit"<<endl;
   cout<<"Please select the menu by entering corresponding number"<<endl;
 }
 //************************************************************************************
 // *****************************The start of the addition section***********************88
 //check whether the user input function are valid
-bool amount_check(string amount){
-  if (amount[0]!='+' || amount[0]!='-'){return 0;}
+bool amount_check(string s_amount){
+  if (s_amount[0]!='+' && s_amount[0]!='-'){return 0;}
   int dot_count=0;
-  for (int i=1;i<amount.length();i++){
-    if (!isdigit(amount[i]) && amount[i]!='.'){
+  for (int i=1;i<s_amount.length();i++){
+    if (!isdigit(s_amount[i]) && s_amount[i]!='.'){
       return 0;
     }
-    if (amount[i]=='.'){
+    if (s_amount[i]=='.'){
       dot_count+=1;
     }
     if (dot_count>=2){
       return 0;
     }
   }
-  float number=stof(amount);
-  if (number==0){return 0;}
+  float amount=stof(s_amount);
+  if (amount==0){return 0;}
   return 1;
 }
 
@@ -384,9 +370,8 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
     cout<<"Invalid amount please input again"<<endl;
     getline(cin,s_amount);
   }
-  //precess the amount
-  if (choice_ei=="1"){amount=stof("-"+s_amount);}
-  else{amount=stof("+"+s_amount);}
+  //manuipulate the amount check
+  amount=stof(s_amount);
   //get the time
   cout<<"Please enter the year month date by following exactly format: YYYYMMDD"<<endl;
   getline(cin,time);
@@ -409,7 +394,7 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
 }
 
 // add record from user
-void add(vector<Record> &recordList,vector<RecordCategory> &typeList, vector<RecordCategory> &methodList, float &user_income, float &user_expenditure){
+void add(vector<Record> &recordList, map <string,int> &typeList, map<string,int> &methodList, float &user_income, float &user_expenditure){
   string time,type,method,remark;
   float amount;
   prompt_add_input(amount,time,type,method,remark);
@@ -443,7 +428,7 @@ bool int_check(string amount){
 
 void show_menu()
 {
-  cout << "**************************************" << endl;
+  cout << "*****************" << endl;
   cout << "You are now asking to show Records" << endl;
   cout << "Please enter an integer or char to select" << endl;
   cout << "1.show by Date" << endl;
@@ -519,8 +504,7 @@ void search_time(vector<Record> &recordList)
     cout << "Invalid input" << endl;
     getline (cin,endtime);
   }
-  starttime=starttime.substr(0,4)+"-"+starttime.substr(4,2)+"-"+starttime.substr(6,2);
-  endtime=endtime.substr(0,4)+"-"+endtime.substr(4,2)+"-"+endtime.substr(6,2);
+
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
   {
     if (recordList[i].get_time()>=starttime && recordList[i].get_time()<=endtime)
@@ -559,14 +543,13 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
   }
 }
 
-void search_method(vector<Record> &recordList,vector<RecordCategory> &methodList)
+void search_method(vector<Record> &recordList,map<string,int> &methodList)
 {
   cout << "Please enter a method you want to search for:" << endl;
   cout << "These are the existing method:" << endl;
-  for (int i=0;i<methodList.size();i++)
-  {
-    cout << methodList[i].category <<endl;  //showing existing method
-  }
+  map <string,int>::iterator itr;
+  for (itr = methodList.begin();itr!=methodList.end();itr++)
+  {cout << itr->first << " "<<endl;}  //showing existing method
   cout << endl;
   string method;
   getline(cin,method);
@@ -574,20 +557,17 @@ void search_method(vector<Record> &recordList,vector<RecordCategory> &methodList
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
   {
     if (recordList[i].get_method() == method)
-    {
-      show_record(recordList,i);
-    }
+    {show_record(recordList,i);}
   }
 }
 
-void search_type(vector<Record> &recordList,vector<RecordCategory> &typeList)
+void search_type(vector<Record> &recordList,map<string,int> &typeList)
 {
   cout << "Please enter a type you want to search for:" << endl;
   cout << "These are the existing type:" << endl;
-  for (int i=0;i<typeList.size();i++)
-  {
-    cout << typeList[i].category <<endl;  //showing existing type
-  }
+  map <string,int>::iterator itr;
+  for (itr=typeList.begin();itr!=typeList.end();itr++)
+  {cout << (*itr).first << " ";}  //showing existing type
   cout << endl;
   string type;
   getline(cin,type);
@@ -599,7 +579,21 @@ void search_type(vector<Record> &recordList,vector<RecordCategory> &typeList)
   }
 }
 
-/*void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,vector<Record> &methodList, vector<Record> &typeList)
+void update_map(map<string,int> &m,string key,int change)
+{
+  if (change==1)
+  {
+    if (m.count(key)==0) {m[key]=1;}
+    else {m[key]+=1;}
+  }
+  else if (change==-1)
+  {
+    if (m[key]==1) {m.erase(key);}
+    else {m[key]-=1;}
+  }
+}
+
+void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
   sort_time(recordList);
   cout << "You are now in the edit mode,please enter the corresponding integer to edit record" << endl;
@@ -610,13 +604,69 @@ void search_type(vector<Record> &recordList,vector<RecordCategory> &typeList)
     cout << "Invalid input, please enter again" << endl;
     getline(cin,input);
   }
-  index
+  int i = stoi(input);
+  show_record(recordList,i);
+  cout << "Please edit the record, if you want to keep the origin data, please press Enter" << endl;
+  cout << "Please enter the Amount(positive means income,negative means expense):";
+  getline(cin,input);
+  while (!amount_check(input))
+  {
+    cout << "Invalid input, please enter again" << endl;
+    getline(cin,input);
+  }
+  if (input.size()==0);
+  else
+  {
+    float oldamount = recordList[i].get_amount();
+    float newamount = stof(input);
+    if (oldamount<0) {expense-=oldamount;}
+    else if (oldamount>0) {income-=oldamount;}
+    if (newamount<0) {expense+=newamount;}
+    else if (newamount>0) {income+=newamount;}
+    recordList[i].set_amount(newamount);
+  }
 
+  cout << "Please enter the Date:(Format:YYYYMMDD)";
+  getline(cin,input);
+  while (!time_check(input))
+  {
+    cout << "Invalid input, please enter again" << endl;
+    getline(cin,input);
+  }
+  if (input.size()==0);
+  else {recordList[i].set_time(input);}
 
-} */
+  cout << "Please enter the Method:";
+  getline(cin,input);
+  if (input.size()==0);
+  else
+  {
+    string oldmethod = recordList[i].get_method();
+    string newmethod = input;
+    update_map(methodList,oldmethod,-1);
+    update_map(methodList,newmethod,1);
+    recordList[i].set_method(input);
+  }
 
+  cout << "Please enter the Type:";
+  getline(cin,input);
+  if (input.size()==0);
+  else
+  {
+    string oldtype = recordList[i].get_type();
+    string newtype = input;
+    update_map(typeList,oldtype,-1);
+    update_map(typeList,newtype,1);
+    recordList[i].set_type(input);
+  }
 
-void show(float &income,float &expense,float &budget,vector<Record> &recordList,vector<RecordCategory> &methodList, vector<RecordCategory> &typeList)
+  cout << "Please enter the Remark:";
+  getline(cin,input);
+  if (input.size()==0);
+  else {recordList[i].set_remark(input);}
+}
+
+void show(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
   string choice;
   while (true)
@@ -632,11 +682,12 @@ void show(float &income,float &expense,float &budget,vector<Record> &recordList,
     else if(choice=="7") {search_method(recordList,methodList);}
     else if(choice=="8") {search_type(recordList,typeList);}
     else if(choice=="9") {break;}
-  /*  else if(choice=="d") {delete_mode();}
-    else if(choice=="e") {edit_mode();}*/
+//    else if(choice=="d") {delete_mode();}
+    else if(choice=="e") {edit_mode(income,expense,budget,recordList,methodList,typeList);}
     else {cout << "Invalid option,please enter again" << endl;}
   }
 }
+
 //********************************************************************************************
 // ************************The start of the write data in to user_record function(Ending funtion)***********
 //write data in to the user's individual record
@@ -676,47 +727,45 @@ void write_data(string login_user, vector <Record> &recordList,float &user_budge
   cout<<"Logout successfully"<<endl;
 }
 // The End of the write data in to user_record function(Ending funtion)
-//*********************************************************************************************
+//************************************************************************************************
+// ************************The start of the financial report function*****************************
+
+
+
+
+
+//*************************The end of the financial report function*************************
+//**************************************************************************************************8
 //               main execution function
 int main()
 { string login_user="";
   float user_budget,user_income,user_expenditure;
   vector<Record> recordList;
-  vector<RecordCategory> typeList;
-  vector<RecordCategory> methodList;
+  map <string,int> typeList;
+  map <string,int> methodList;
   login(login_user,user_budget,user_income,user_expenditure);
   load_userdata(login_user,recordList,typeList,methodList);
   // The overall menu of function avaliable for execution after login
   string choice;
-  print_menu2();
-  while (true){
+  while (true)
+  {
+    print_menu2();
     getline(cin,choice);
-    if (choice=="1"){
-      add(recordList,typeList,methodList,user_income,user_expenditure);
-      print_menu2();
-      }
-    else if (choice=="2"){
-      show(user_income,user_expenditure,user_budget,recordList,methodList,typeList);
-      print_menu2();
-      }
-    else if (choice=="3"){
-      write_data(login_user,recordList,user_budget,user_income,user_expenditure);
-      break;
-    }
-    else {
-      cout<<"please input valid choice"<<endl;
-    }
+    if (choice=="1"){add(recordList,typeList,methodList,user_income,user_expenditure);}
+    else if (choice=="2"){ show(user_income,user_expenditure,user_budget,recordList,methodList,typeList);}
+    else if (choice=="3"){//financial_report(recordList,typeList,methodList,user_income,user_expenditure)
+}
+    else if (choice=="4"){write_data(login_user,recordList,user_budget,user_income,user_expenditure);break;}
+    else {cout<<"please input valid choice"<<endl;}
   }
-  for (int i=0;i<recordList.size();i++){
+  /*for (int i=0;i<recordList.size();i++){
     cout<<(recordList[i]).get_amount()<<" "<<(recordList[i]).get_time()<<" "<<(recordList[i]).get_type()<<" "<<(recordList[i]).get_method()<<" "<<(recordList[i]).get_remark()<<" "<<endl;
   }
-  for (int i=0;i<typeList.size();i++){
-    cout<<(typeList[i]).category<<" "<<(typeList[i]).count<<endl;
+  for (map <string,int>::iterator itr=typeList.begin();itr!=typeList.end();itr++){
+    cout<<itr->first<<" "<<itr->second<<endl;
   }
-  for (int i=0;i<methodList.size();i++){
-    cout<<(methodList[i]).category<<" "<<(methodList[i]).count<<endl;
+  for (map <string,int>::iterator itr=methodList.begin();itr!=methodList.end();itr++){
+    cout<<itr->first<<" "<<itr->second<<endl;
   }
-
-
-  return 0;
+  return 0;*/
 }
