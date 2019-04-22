@@ -666,6 +666,31 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
   else {recordList[i].set_remark(input);}
 }
 
+void delete_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
+{
+  void sort_time(recordList);
+  cout << "You are now in the delete mode,please enter the corresponding integer to delete record, press Enter to exit delete mode" << endl;
+  string input;
+  getline(cin,input);
+  if (input.size()==0) {return;}
+  while (!int_check(input)) 
+  {
+    cout << "Invalid input, please enter again" << endl;
+    getline(cin,input);
+    if (input.size()==0) {return;}
+  }
+  int i = stoi(input);
+  float oldamount = recordList[i].get_amount();
+  if (oldamount<0) {expense-=oldamount;}
+  else if (oldamount>0) {income-=oldamount;}
+  string oldmethod = recordList[i].get_method();
+  update_map(methodList,oldmethod,-1);
+  string oldtype = recordList[i].get_type();
+  update_map(typeList,oldtype,-1); 
+  recordList.erase[i];
+}
+
+
 void show(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
   string choice;
