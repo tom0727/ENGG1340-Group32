@@ -454,15 +454,15 @@ void show_record(vector<Record> &recordList,int &i)
   cout<<"  "<<left<<setw(6)<<i;
   cout<<setw(1)<<" "<<setw(8)<<(recordList[i]).get_amount();
   cout<<setw(10)<<(recordList[i]).get_time();
-  cout<<setw(6)<<"      "<<setw(10)<<(recordList[i]).get_type();
-  cout<<setw(2)<<"  "<<setw(12)<<(recordList[i]).get_method()<<setw(2)<<"  ";
+  cout<<setw(6)<<"      "<<setw(18)<<(recordList[i]).get_type();
+  cout<<setw(2)<<"  "<<setw(20)<<(recordList[i]).get_method()<<setw(2)<<"  ";
   cout.copyfmt(init);
   cout<<left<<(recordList[i]).get_remark()<<endl;
 }
 
 void show_header()
 {
-  cout<<left<<setw(5)<<"Index"<<setw(3)<<"   "<<setw(6)<<"Amount"<<setw(7)<<"       "<<setw(8)<<"Date"<<setw(5)<<"   "<<setw(12)<<"Type"<<setw(14)<<"Method"<<setw(6)<<"Remark"<<endl;
+  cout<<left<<setw(5)<<"Index"<<setw(3)<<"   "<<setw(6)<<"Amount"<<setw(6)<<"      "<<setw(8)<<"Date"<<setw(5)<<"   "<<setw(20)<<"Type"<<setw(22)<<"Method"<<setw(6)<<"Remark"<<endl;
 }
 
 bool compareTime(Record &r1,Record &r2)
@@ -480,6 +480,7 @@ bool compareType(Record &r1,Record &r2)
 void sort_time(vector<Record> &recordList)
 {
   sort(recordList.begin(),recordList.end(),compareTime);
+  show_header();
   for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
 }
 
@@ -522,21 +523,23 @@ void search_time(vector<Record> &recordList)
   if (starttime=="000") {return;}
   while (!time_check(starttime))  //time_check function is in another file
   {
-    cout << "Invalid input" << endl;
+    cout << "Invalid input,please Enter again" << endl;
     getline (cin,starttime);
     if (starttime=="000") {return;}
   }
+  starttime=starttime.substr(0,4)+"-"+starttime.substr(4,2)+"-"+starttime.substr(6,2);
 
   cout << "End time: ";
   getline(cin,endtime);
   if (endtime=="000") {return;}
   while (!time_check(endtime))  //time_check function is in another file
   {
-    cout << "Invalid input" << endl;
+    cout << "Invalid input,please Enter again" << endl;
     getline (cin,endtime);
     if (endtime=="000") {return;}
   }
   if (endtime.size()==0) {endtime = "9999-99-99";}
+  endtime=endtime.substr(0,4)+"-"+endtime.substr(4,2)+"-"+endtime.substr(6,2);
   
   show_header();
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
@@ -558,7 +561,7 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
   if (low=="000") {return;}
   while (!amount_check(low))
   {
-    cout << "Invalid input" << endl;
+    cout << "Invalid input,please Enter again" << endl;
     getline (cin,low);
     if (low=="000") {return;}
   }
@@ -568,7 +571,7 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
   if (high=="000") {return;}
   while (!amount_check(high))
   {
-    cout << "Invalid input" << endl;
+    cout << "Invalid input,please Enter again" << endl;
     getline (cin,high);
     if (high=="000") {return;}
   }
