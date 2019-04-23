@@ -449,7 +449,20 @@ void show_menu()
 
 void show_record(vector<Record> &recordList,int &i)
 {
-  cout<<left<<setw(3)<<i<<setw(1)<<" "<<setw(5)<<(recordList[i]).get_amount()<<setw(1)<<" "<<setw(12)<<(recordList[i]).get_time()<<setw(1)<<" "<<setw(10)<<(recordList[i]).get_type()<<setw(1)<<" "<<setw(12)<<(recordList[i]).get_method()<<setw(1)<<" "<<setw(15)<<(recordList[i]).get_remark()<<" "<<endl;
+  ios init(NULL);
+  init.copyfmt(cout);
+  cout<<"  "<<left<<setw(6)<<i;
+  cout<<setw(1)<<" "<<setw(8)<<(recordList[i]).get_amount();
+  cout<<setw(10)<<(recordList[i]).get_time();
+  cout<<setw(6)<<"      "<<setw(10)<<(recordList[i]).get_type();
+  cout<<setw(2)<<"  "<<setw(12)<<(recordList[i]).get_method()<<setw(2)<<"  ";
+  cout.copyfmt(init);
+  cout<<left<<(recordList[i]).get_remark()<<endl;
+}
+
+void show_header()
+{
+  cout<<left<<setw(5)<<"Index"<<setw(3)<<"   "<<setw(6)<<"Amount"<<setw(7)<<"       "<<setw(8)<<"Date"<<setw(5)<<"   "<<setw(12)<<"Type"<<setw(14)<<"Method"<<setw(6)<<"Remark"<<endl;
 }
 
 bool compareTime(Record &r1,Record &r2)
@@ -474,6 +487,7 @@ void sort_amount(vector<Record> &recordList)
 {
   sort(recordList.begin(),recordList.end(),compareAmount);
   int negative_index=recordList.size();  //The index of the first negative number
+  show_header();
   for (int i=0;i<recordList.size();i++)
   {
     if (recordList[i].get_amount()<0) {negative_index=i; break;}
@@ -486,12 +500,14 @@ void sort_amount(vector<Record> &recordList)
 void sort_method(vector<Record> &recordList)
 {
   sort(recordList.begin(),recordList.end(),compareMethod);
+  show_header();
   for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
 }
 
 void sort_type(vector<Record> &recordList)
 {
   sort(recordList.begin(),recordList.end(),compareType);
+  show_header();
   for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
 }
 
@@ -521,7 +537,8 @@ void search_time(vector<Record> &recordList)
     if (endtime=="000") {return;}
   }
   if (endtime.size()==0) {endtime = "9999-99-99";}
-
+  
+  show_header();
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
   {
     if (recordList[i].get_time()>=starttime && recordList[i].get_time()<=endtime)
@@ -559,6 +576,7 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
   if (low.size()==0) {l=-99999999;} else{l=stof(low);}
   if (high.size()==0) {h=99999999;} else {h=stof(high);}
 
+  show_header();
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
   {
     if (recordList[i].get_amount() >= l && recordList[i].get_amount() <= h)
@@ -577,6 +595,7 @@ void search_method(vector<Record> &recordList,map<string,int> &methodList)
   string method;
   getline(cin,method);
   transform_lower(method);  //transform "method" into lower case
+  show_header();
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
   {
     if (recordList[i].get_method() == method)
@@ -595,6 +614,7 @@ void search_type(vector<Record> &recordList,map<string,int> &typeList)
   string type;
   getline(cin,type);
   transform_lower(type);  //transform "type" into lower case
+  show_header();
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
   {
     if (recordList[i].get_type() == type)
@@ -619,7 +639,7 @@ void update_map(map<string,int> &m,string key,int change)
 void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
   sort_time(recordList);
-  cout << "You are now in the edit mode,please enter the corresponding integer to edit record" << endl;
+  cout << "You are now in the edit mode,please enter the corresponding index to edit record" << endl;
   string input;
   getline(cin,input);
   while (!int_check(input))
