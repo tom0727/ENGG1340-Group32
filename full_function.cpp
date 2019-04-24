@@ -483,35 +483,116 @@ void sort_time(vector<Record> &recordList)
 {
   sort(recordList.begin(),recordList.end(),compareTime);
   show_header();
-  for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
+  int i=0,count=0;
+  string option;
+  while (i<recordList.size())
+  {
+    show_record(recordList,i);
+    i++; count++;
+    if (count==5) 
+    {
+      cout << "Please Enter n to view next page, press Enter to Exit: ";
+      while (true)
+      {
+        getline(cin,option);
+        if (option=="") {return;}
+        else if (option=="n") {count=0; break;}
+        else {cout << "Invalid input,please Enter again: ";}
+      }
+    }
+  }
 }
+
 
 void sort_amount(vector<Record> &recordList)
 {
   sort(recordList.begin(),recordList.end(),compareAmount);
   int negative_index=recordList.size();  //The index of the first negative number
   show_header();
-  for (int i=0;i<recordList.size();i++)
+  int i=0,count=0;
+  string option;
+  while (i<recordList.size())
   {
-    if (recordList[i].get_amount()<0) {negative_index=i; break;}
     show_record(recordList,i);
+    i++,count++;
+    if (count==5) 
+    {
+      cout << "Please Enter n to view next page, press Enter to Exit: ";
+      while (true)
+      {
+        getline(cin,option);
+        if (option=="") {return;}
+        else if (option=="n") {count=0; break;}
+        else {cout << "Invalid input,please Enter again: ";}
+      }
+    }
+    if (recordList[i].get_amount()<0) {negative_index=i; i=recordList.size()-1; break;}
   }
-  for (int i=recordList.size()-1;i>=negative_index;i--)
-  {show_record(recordList,i);}
+
+  while (i>=negative_index)
+  {
+    show_record(recordList,i);
+    i--;count++;
+    if (count==5) 
+    {
+      cout << "Please Enter n to view next page, press Enter to Exit: ";
+      while (true)
+      {
+        getline(cin,option);
+        if (option=="") {return;}
+        else if (option=="n") {count=0; break;}
+        else {cout << "Invalid input,please Enter again: ";}
+      }
+    }
+  }
 }
 
 void sort_method(vector<Record> &recordList)
 {
   sort(recordList.begin(),recordList.end(),compareMethod);
   show_header();
-  for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
+  int i=0,count=0;
+  string option;
+  while (i<recordList.size())
+  {
+    show_record(recordList,i);
+    i++; count++;
+    if (count==5) 
+    {
+      cout << "Please Enter n to view next page, press Enter to Exit: ";
+      while (true)
+      {
+        getline(cin,option);
+        if (option=="") {return;}
+        else if (option=="n") {count=0; break;}
+        else {cout << "Invalid input,please Enter again: ";}
+      }
+    }
+  }
 }
 
 void sort_type(vector<Record> &recordList)
 {
   sort(recordList.begin(),recordList.end(),compareType);
   show_header();
-  for (int i=0;i<recordList.size();i++) {show_record(recordList,i);}
+  int i=0,count=0;
+  string option;
+  while (i<recordList.size())
+  {
+    show_record(recordList,i);
+    i++; count++;
+    if (count==5) 
+    {
+      cout << "Please Enter n to view next page, press Enter to Exit: ";
+      while (true)
+      {
+        getline(cin,option);
+        if (option=="") {return;}
+        else if (option=="n") {count=0; break;}
+        else {cout << "Invalid input,please Enter again: ";}
+      }
+    }
+  }
 }
 
 void search_time(vector<Record> &recordList)
