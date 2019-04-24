@@ -407,7 +407,7 @@ void add(vector<Record> &recordList, map <string,int> &typeList, map<string,int>
   }
   else{
     expense-=amount;  //expense is positive, the amount here is negative
-    if (expense>=budget) {cout<<"The current expense is: "<<expense<< " ,You have exceeded the budget of "<<budget<<endl;}
+    if (expense>=budget) {cout<<endl;cout<<"The current expense is: "<<expense<< " ,You have exceeded the budget of "<<budget<<endl;}
   }
   Record temp;
   temp.set_amount(amount);
@@ -492,12 +492,13 @@ void sort_time(vector<Record> &recordList)
     i++; count++;
     if (count==5)
     {
+      cout << endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
       {
         getline(cin,option);
         if (option.size()==0) {return;}
-        else if (option=="n") {count=0; break;}
+        else if (option=="n") {count=0; cout<<endl; break;}
         else {cout << "Invalid input,please Enter again: ";}
       }
     }
@@ -518,12 +519,13 @@ void sort_amount(vector<Record> &recordList)
     i++,count++;
     if (count==5)
     {
+      cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
       {
         getline(cin,option);
         if (option=="") {return;}
-        else if (option=="n") {count=0; break;}
+        else if (option=="n") {count=0; cout<<endl; break;}
         else {cout << "Invalid input,please Enter again: ";}
       }
     }
@@ -536,12 +538,13 @@ void sort_amount(vector<Record> &recordList)
     i--;count++;
     if (count==5)
     {
+      cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
       {
         getline(cin,option);
         if (option=="") {return;}
-        else if (option=="n") {count=0; break;}
+        else if (option=="n") {count=0;cout<<endl; break;}
         else {cout << "Invalid input,please Enter again: ";}
       }
     }
@@ -560,12 +563,13 @@ void sort_method(vector<Record> &recordList)
     i++; count++;
     if (count==5)
     {
+      cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
       {
         getline(cin,option);
         if (option=="") {return;}
-        else if (option=="n") {count=0; break;}
+        else if (option=="n") {count=0;cout<<endl; break;}
         else {cout << "Invalid input,please Enter again: ";}
       }
     }
@@ -584,12 +588,13 @@ void sort_type(vector<Record> &recordList)
     i++; count++;
     if (count==5)
     {
+      cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
       {
         getline(cin,option);
         if (option=="") {return;}
-        else if (option=="n") {count=0; break;}
+        else if (option=="n") {count=0;cout<<endl; break;}
         else {cout << "Invalid input,please Enter again: ";}
       }
     }
@@ -676,12 +681,13 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
 
 void search_method(vector<Record> &recordList,map<string,int> &methodList)
 {
-  cout << "These are the existing method:" << endl;
+  cout << endl;
+  cout << "These are the existing method:" << endl;  cout<<endl;
   map <string,int>::iterator itr;
   for (itr = methodList.begin();itr!=methodList.end();itr++)
   {cout << itr->first << "  |  ";}  //showing existing method
   cout << endl;
-  cout << "Please enter a method you want to search for: press Enter to exit";
+  cout << "Please enter a method you want to search for(press Enter to exit): ";
   string method;
   getline(cin,method);
   transform_lower(method);  //transform "method" into lower case
@@ -700,7 +706,7 @@ void search_type(vector<Record> &recordList,map<string,int> &typeList)
   for (itr=typeList.begin();itr!=typeList.end();itr++)
   {cout << (*itr).first << "  |  ";}  //showing existing type
   cout << endl;
-  cout << "Please enter a type you want to search for: press Enter to exit";
+  cout << "Please enter a type you want to search for(press Enter to exit): ";
   string type;
   getline(cin,type);
   transform_lower(type);  //transform "type" into lower case
@@ -728,7 +734,7 @@ void update_map(map<string,int> &m,string key,int change)
 
 void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
-  sort_time(recordList);
+  sort_time(recordList); cout<<endl;
   cout << "You are now in the edit mode,please enter the corresponding index to edit record(press Enter to Exit): ";
   string input;
   getline(cin,input);
@@ -807,7 +813,7 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
 
 void delete_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
-  sort_time(recordList);
+  sort_time(recordList); cout<<endl;
   cout << "You are now in the delete mode,please enter the corresponding integer to delete record(press Enter to Exit): ";
   string input;
   getline(cin,input);
