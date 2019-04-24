@@ -96,12 +96,12 @@ bool isalnum(char c) //checking if the char is a Alphabet or number
 
 //printing the login menu
 /* print the starting menu*/
-void printmenu(){
+void print_menu1(){
   cout<<"********************************************************************************************************"<<endl;
   cout<<"Welcome to private accounting system"<<endl;
   cout<<"1.Sign up"<<endl;
   cout<<"2.Login"<<endl;
-  cout<<"Please select the menu by entering corresponding number(press Enter to Exit): ";
+  cout<<"Please select the menu by entering corresponding number(Press Enter to Exit): ";
 }
 
 //***********************************************************************
@@ -158,8 +158,9 @@ void registeraccount(){
   cout<<"Registration:"<<endl;
   while (true){
     cout<<"Username should only contain Alphabet or digit"<<endl;
-    cout<<"Please settle your username: ";
+    cout<<"Please settle your username: (Press Enter to Exit)";
     getline(cin,username);
+    if (username==""){return;}
     if (username_check(username)==true){
       cout<<"please settle your password: ";
       getline(cin,password);
@@ -249,16 +250,16 @@ bool authentification(string &login_user,string &user_password,float &budget,flo
 void login(string &login_user,string &user_password,float &budget,float &income,float &expense){
   string choice;
   create_usertxt();
-  printmenu();
+  print_menu1();
   while (login_user==""){
     getline(cin,choice);
     if (choice=="1"){
         registeraccount();
-        printmenu();
+        print_menu1();
       }
     else if (choice=="2"){
       if (authentification(login_user,user_password,budget,income,expense)){break;}
-      printmenu();
+      print_menu1();
     }
     else if (choice.size()==0){
         exit(1);
@@ -386,11 +387,20 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   time=time.substr(0,4)+"-"+time.substr(4,2)+"-"+time.substr(6,2);
   transform_lower(time);
   //get type/method/remark
+
   cout<<"Please enter the type of expense/income: ";
   getline(cin,type);
+  while (type==""){
+    cout<<"Type can not be empty"<<endl;
+    getline(cin,type);
+  }
   transform_lower(type);
   cout<<"Please enter the payment method of expense/income: ";
   getline(cin,method);
+  while (method==""){
+    cout<<"Method can not be empty"<<endl;
+    getline(cin,method);
+  }
   transform_lower(method);
   cout<<"Please add some remark to the record: ";
   getline(cin,remark);
@@ -418,6 +428,7 @@ void add(vector<Record> &recordList, map <string,int> &typeList, map<string,int>
   recordList.push_back(temp);
   List_fill(typeList,type);
   List_fill(methodList,method);
+  cout<<"Record successfully added"<<endl;
 }
 //************************End of addition function*****************************************
 //********************************************************************************************
@@ -762,7 +773,7 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
     float newamount = stof(input);
     if (oldamount<0) {expense+=oldamount;}  //because the expense here is positive
     else if (oldamount>0) {income-=oldamount;}
-    if (newamount<0) 
+    if (newamount<0)
     {
       expense-=newamount;
       if (expense>=budget) {cout<<"The current expense is: "<<expense<< " ,You have exceeded the budget of "<<budget<<endl;}  //because the expense here is positive
@@ -925,8 +936,7 @@ float to_percentage (float amount){
 void print_graph (map <float,string> &datamap,float &income,float &expense,string x_header){
     cout<<"Income Percentage"<<endl;
     cout<<"A"<<endl;
-    cout<<"I"<<endl;
-    for (int j=19;j>=0;j--){
+    for (int j=21;j>=0;j--){
       cout<<"I";
       if (j%4==3){
         cout<<setw(3)<<(j+1)*5<<"%     ";
@@ -940,7 +950,8 @@ void print_graph (map <float,string> &datamap,float &income,float &expense,strin
           cout<<"**";
           cout<<"        ";
         }
-        else if ((j*0.05-((itr->first)/income))<0.05){cout<<fixed<<setprecision(1)<<to_percentage((itr->first)/income)<<"%     ";}
+        else if ((j*0.05-(itr->first/income))<0.05){cout<<fixed<<setprecision(1)<<to_percentage((itr->first)/income)<<"%     ";}
+        else if (j*0.05-(itr->first/income)<0.10 && j*0.05-(itr->first/income)>0.05){cout<<fixed<<left<<setprecision(1)<<setw(10)<<itr->first;}
         else{cout<<"          ";};
       }
       cout<<endl;
@@ -959,7 +970,7 @@ void print_graph (map <float,string> &datamap,float &income,float &expense,strin
    cout<<"Expense Percentage"<<endl;
    cout<<"A"<<endl;
    cout<<"I"<<endl;
-   for (int j=19;j>=0;j--){
+   for (int j=21;j>=0;j--){
      cout<<"I";
      if (j%4==3){
        cout<<setw(3)<<(j+1)*5<<"%     ";
@@ -973,7 +984,8 @@ void print_graph (map <float,string> &datamap,float &income,float &expense,strin
          cout<<"**";
          cout<<"        ";
        }
-       else if ((((itr->first)/expense)+j*0.05)<0.05){cout<<fixed<<setprecision(1)<<to_percentage(-(itr->first)/expense)<<"%     ";}
+       else if ((itr->first/expense)+j*0.05<0.05){cout<<fixed<<setprecision(1)<<to_percentage(-(itr->first)/expense)<<"%     ";}
+       else if ((itr->first/expense)+j*0.05<0.10 && (itr->first/expense)+j*0.05>0.05){cout<<fixed<<left<<setprecision(1)<<setw(10)<<-itr->first;}
        else{cout<<"          ";};
      }
      cout<<endl;
@@ -1003,18 +1015,31 @@ void Show_Income_Expense_ByType(vector <Record> &recordList,map <string,int> &ty
         Category_expense+=recordList[i].get_amount();
       }
     }
-    typemap[Category_income]=itr->first;
-    typemap[Category_expense]=itr->first;
+    if (Category_income!=0){typemap[Category_income]=itr->first;}
+    if (Category_expense!=0){typemap[Category_expense]=itr->first;}
   }
+
   cout << endl;
-  print_graph(typemap,income,expense,"Type");
-  for (map <float,string>::iterator itr=typemap.begin();itr!=typemap.end();itr++){
-    if ((itr->first)>0){
-      cout<<"The "<<left<<setw(10)<<itr->second<<"income  is +"<<fixed<<setprecision(1)<<setw(9)<<itr->first<<" occupying "<<setw(5)<<to_percentage(itr->first/income)<< "% "<<"of total income"<<endl;
+  string choice;
+  cout<<"1.View by graph"<<endl;
+  cout<<"2.View by Text"<<endl;
+  cout<<"Please input your choice (Press Enter to exit)";
+  getline(cin,choice);
+  while (true){
+    if (choice=="1"){print_graph(typemap,income,expense,"Type");return;}
+    else if (choice=="2"){
+      for (map <float,string>::iterator itr=typemap.begin();itr!=typemap.end();itr++){
+        if ((itr->first)>0){
+          cout<<"The "<<left<<setw(10)<<itr->second<<"income  is +"<<fixed<<setprecision(1)<<setw(9)<<itr->first<<" occupying "<<setw(5)<<to_percentage(itr->first/income)<< "% "<<"of total income"<<endl;
+        }
+        if ((itr->first)<0){
+          cout<<"The "<<left<<setw(10)<<itr->second<<"expense is "<<fixed<<setprecision(1)<<setw(10)<<itr->first<<" occupying "<<setw(5)<<to_percentage(-(itr->first/expense))<<"% "<<"of total expense"<<endl;
+        }
+      }
+      return;
     }
-    if ((itr->first)<0){
-      cout<<"The "<<left<<setw(10)<<itr->second<<"expense is "<<fixed<<setprecision(1)<<setw(10)<<itr->first<<" occupying "<<setw(5)<<to_percentage(-(itr->first/expense))<<"% "<<"of total expense"<<endl;
-    }
+    else if (choice==""){return;}
+    else {cout<<"Invalid input, please enter again: ";getline(cin,choice);}
   }
 }
 
@@ -1034,18 +1059,30 @@ void Show_Income_Expense_ByMethod(vector <Record> &recordList,map <string,int> &
         Category_expense+=recordList[i].get_amount();
       }
     }
-    methodmap[Category_income]=itr->first;
-    methodmap[Category_expense]=itr->first;
+    if (Category_income!=0){methodmap[Category_income]=itr->first;}
+    if (Category_expense!=0){methodmap[Category_expense]=itr->first;}
   }
   cout << endl;
-  print_graph(methodmap,income,expense,"Method");
-  for (map <float,string>::iterator itr=methodmap.begin();itr!=methodmap.end();itr++){
-    if ((itr->first)>0){
-      cout<<"The income  via "<<left<<setw(10)<<itr->second<<" is +"<<fixed<<setprecision(1)<<setw(9)<<itr->first<<" occupying "<<setw(5)<<to_percentage(itr->first/income)<<"% "<<"of total income"<<endl;
+  string choice;
+  cout<<"1.View by graph"<<endl;
+  cout<<"2.View by Text"<<endl;
+  cout<<"Please input your choice (Press Enter to exit)";
+  getline(cin,choice);
+  while (true){
+    if (choice=="1"){print_graph(methodmap,income,expense,"Method");return;}
+    else if (choice=="2"){
+      for (map <float,string>::iterator itr=methodmap.begin();itr!=methodmap.end();itr++){
+        if ((itr->first)>0){
+          cout<<"The income  via "<<left<<setw(10)<<itr->second<<" is +"<<fixed<<setprecision(1)<<setw(9)<<itr->first<<" occupying "<<setw(5)<<to_percentage(itr->first/income)<<"% "<<"of total income"<<endl;
+        }
+        if ((itr->first)<0){
+          cout<<"The expense via "<<left<<setw(10)<<itr->second<<" is "<<fixed<<setprecision(1)<<setw(10)<<itr->first<<" occupying "<<setw(5)<<to_percentage(-(itr->first/expense))<<"% "<<"of total expense"<<endl;
+        }
+      }
+      return;
     }
-    if ((itr->first)<0){
-      cout<<"The expense via "<<left<<setw(10)<<itr->second<<" is "<<fixed<<setprecision(1)<<setw(10)<<itr->first<<" occupying "<<setw(5)<<to_percentage(-(itr->first/expense))<<"% "<<"of total expense"<<endl;
-    }
+    else if (choice==""){return;}
+    else {cout<<"Invalid input, please enter again: ";getline(cin,choice);}
   }
 }
 
@@ -1088,7 +1125,7 @@ void Show_Income_Expense_ByDate(vector <Record> &recordList){
     }
   }
   cout << endl;
-  cout<<"The total income      in this interval is: +"<<interval_income<<endl;
+  cout<<"The total income  in this interval is: +"<<interval_income<<endl;
   cout<<"The total expense in this interval is: "<<interval_expense<<endl;
 }
 
@@ -1119,18 +1156,19 @@ void change_password(string &login_user,string &user_password){
    string username,password;
    cout<<"**********************************************************************"<<endl;
    cout<<"You have enter the password changing mode"<<endl;
-   cout<<"Please enter your username: ";
+   cout<<"Please enter your username: (Press Enter to Exit)";
    while (true){
     getline(cin,username);
+    if (username==""){return;}
     if (username==login_user){
       cout<<"Please enter the password: ";
       getline(cin,password);
       if (password==user_password){
         break;
       }
-      else{cout<<"Incorrect password, please enter the username again: ";}
+      else{cout<<"Incorrect password, please enter the username again: (Press Enter to Exit)";}
     }
-    else{cout<<"Incorrect username, please enter the username again: ";}
+    else{cout<<"Incorrect username, please enter the username again: (Press Enter to Exit)";}
   }
   string password_1,password_2;
   while (true){
@@ -1154,7 +1192,7 @@ void change_password(string &login_user,string &user_password){
 //               main execution function
 int main()
 { string login_user="",user_password="";
-  float budget=99999999,income,expense;
+  float budget=9999999999,income,expense;
   vector<Record> recordList;
   map <string,int> typeList;
   map <string,int> methodList;
@@ -1173,14 +1211,5 @@ int main()
     else if (choice==""){write_data(login_user,user_password,recordList,budget,income,expense);break;}
     else {cout<<"Invalid input, please enter again: ";}
   }
-  /*for (int i=0;i<recordList.size();i++){
-    cout<<(recordList[i]).get_amount()<<" "<<(recordList[i]).get_time()<<" "<<(recordList[i]).get_type()<<" "<<(recordList[i]).get_method()<<" "<<(recordList[i]).get_remark()<<" "<<endl;
-  }
-  for (map <string,int>::iterator itr=typeList.begin();itr!=typeList.end();itr++){
-    cout<<itr->first<<" "<<itr->second<<endl;
-  }
-  for (map <string,int>::iterator itr=methodList.begin();itr!=methodList.end();itr++){
-    cout<<itr->first<<" "<<itr->second<<endl;
-  }
-  return 0;*/
+  return 0;
 }
