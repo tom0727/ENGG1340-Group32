@@ -101,8 +101,7 @@ void printmenu(){
   cout<<"Welcome to private accounting system"<<endl;
   cout<<"1.Sign up"<<endl;
   cout<<"2.Login"<<endl;
-  cout<<"3.Exit"<<endl;
-  cout<<"Please select the menu by entering corresponding number: ";
+  cout<<"Please select the menu by entering corresponding number(press Enter to exit): ";
 }
 
 //***********************************************************************
@@ -158,7 +157,7 @@ void registeraccount(){
   cout<<"******************************"<<endl;
   cout<<"Registration:"<<endl;
   while (true){
-    cout<<"please settle your username, username should only contain Alphabet or digit"<<endl;
+    cout<<"Please settle your username, username should only contain Alphabet or digit"<<endl;
     getline(cin,username);
     if (username_check(username)==true){
       cout<<"please settle your password"<<endl;
@@ -212,11 +211,11 @@ bool authentification(string &login_user,string &user_password,float &user_budge
   string userdata;
   cout<<"*********************************"<<endl;
   cout<<"Login:"<<endl;
-  cout<<"Please input your username"<<endl;
+  cout<<"Please enter your username: ";
   while (true){
     getline(cin,username);
     if (username_find(userrecord,username)){
-      cout<<"Please input the password"<<endl;
+      cout<<"Please enter the password: ";
       getline(cin,password);
       int extract_length=username.size()+password.size()+1;
       if ((userrecord.find(username+"#"+password)==0) and (userrecord.substr(extract_length,1)=="#")){
@@ -235,11 +234,11 @@ bool authentification(string &login_user,string &user_password,float &user_budge
         return 1;
       }
       else{
-        cout<<"Incorrect password,please input username again, Input 000 to return to main menu"<<endl;
+        cout<<"Incorrect password,please enter username again, Input 000 to return to main menu"<<endl;
       }
     }
     else if (username=="000"){return 0;}
-    else{cout<<"User name not found,please input username again,Input 000 to return to main menu"<<endl;}
+    else{cout<<"User name not found,please enter username again,Input 000 to return to main menu"<<endl;}
   }
 }
 
@@ -260,11 +259,11 @@ void login(string &login_user,string &user_password,float &user_budget,float &us
       if (authentification(login_user,user_password,user_budget,user_income,user_expenditure)){break;}
       printmenu();
     }
-    else if (choice=="3"){
+    else if (choice==""){
         exit(1);
       }
     else{
-        cout<<"please input valid choice"<<endl;
+        cout<<"Invalid input, please enter again: ";
     }
   }
 }
@@ -318,8 +317,7 @@ void print_menu2(){
   cout<<"2.Show"<<endl;
   cout<<"3.Financial Report"<<endl;
   cout<<"4.Change password"<<endl;
-  cout<<"5.Exit"<<endl;
-  cout<<"Please select the menu by entering corresponding number"<<endl;
+  cout<<"Please select the menu by entering corresponding number(press Enter to exit): ";
 }
 //************************************************************************************
 // *****************************The start of the addition section***********************88
@@ -599,7 +597,7 @@ void search_time(vector<Record> &recordList)
 {
   cout << "Please enter a time interval you want to search for" << endl;
   cout << "The format is YYYYMMDD, enter 000 to exit" << endl;
-  cout << "Press enter to show from the earliest/latest time" << endl;
+  cout << "Press Enter to show from the earliest/latest time" << endl;
   cout << "Start time: ";
   string starttime,endtime;
   getline(cin,starttime);
@@ -888,15 +886,14 @@ void print_menu3(){
   cout<<"2.View the type report"<<endl;
   cout<<"3.View the method report"<<endl;
   cout<<"4.View overall expenditure and income by date"<<endl;
-  cout<<"5.Exit"<<endl;
-  cout<<"Please enter your choice: ";
+  cout<<"Please enter your choice(press Enter to exit): ";
 }
 void set_budget(float &budget){
   string s_budget;
-  cout<<"please input your expected budget: ";
+  cout<<"Please enter your expected budget: ";
   getline(cin,s_budget);
   while (!amount_check(s_budget) || s_budget[0]=='-'){
-    cout<<"Invalid input, please input again: ";
+    cout<<"Invalid input, please enter again: ";
     getline(cin,s_budget);
   }
   budget=stof(s_budget);
@@ -1005,7 +1002,7 @@ void financial_report(vector <Record> &recordList,map <string,int> &typeList, ma
     else if (choice=="2"){Show_Income_Expense_ByType(recordList,typeList,income,expense);}
     else if (choice=="3"){Show_Income_Expense_ByMethod(recordList,methodList,income,expense);}
     else if (choice=="4"){Show_Income_Expense_ByDate(recordList);}
-    else if (choice=="5"){break;}
+    else if (choice==""){break;}
     else{cout<<"Invalid input,please enter again: ";}
   }
 }
@@ -1019,25 +1016,24 @@ void change_password(string &user_password){
    string username,userrecord,password;
    cout<<"***************************************"<<endl;
    cout<<"You have enter the password changing mode"<<endl;
-   cout<<"Please input your username"<<endl;
+   cout<<"Please enter your username: ";
    while (true){
     getline(cin,username);
     if (username_find(userrecord,username)){
-      cout<<"Please input the password"<<endl;
+      cout<<"Please enter the password: ";
       getline(cin,password);
       if ((userrecord.find(username+"#"+password)==0) and (userrecord.substr(username.size()+1+password.size(),1)=="#")){
         break;
       }
-      else{cout<<"Incorrect password, please input the username again"<<endl;}
+      else{cout<<"Incorrect password, please enter the username again: ";}
     }
-    else{cout<<"Incorrect username, please input the username again"<<endl;}
+    else{cout<<"Incorrect username, please enter the username again: ";}
   }
-  string password_1="",password_2=" ";
+  string password_1,password_2;
   while (true){
-    string password_1,password_2;
-    cout<<"Please enter your new password"<<endl;
+    cout<<"Please enter your new password: ";
     getline(cin,password_1);
-    cout<<"Please enter your new password again"<<endl;
+    cout<<"Please enter your new password again: ";
     getline(cin,password_2);
     if (password_1==password_2){
       user_password=password_1;
@@ -1045,7 +1041,7 @@ void change_password(string &user_password){
       return;
     }
     else{
-      cout<<"Please input the identical password"<<endl;
+      cout<<"Please enter the identical password"<<endl;
       cout<<endl;
     }
  }
@@ -1071,8 +1067,8 @@ int main()
     else if (choice=="2"){show(user_income,user_expenditure,user_budget,recordList,methodList,typeList);}
     else if (choice=="3"){financial_report(recordList,typeList,methodList,user_income,user_expenditure,user_budget);}
     else if (choice=="4"){change_password(user_password);}
-    else if (choice=="5"){write_data(login_user,user_password,recordList,user_budget,user_income,user_expenditure);break;}
-    else {cout<<"please input valid choice"<<endl;}
+    else if (choice==""){write_data(login_user,user_password,recordList,user_budget,user_income,user_expenditure);break;}
+    else {cout<<"Invalid input, please enter again: ";}
   }
   /*for (int i=0;i<recordList.size();i++){
     cout<<(recordList[i]).get_amount()<<" "<<(recordList[i]).get_time()<<" "<<(recordList[i]).get_type()<<" "<<(recordList[i]).get_method()<<" "<<(recordList[i]).get_remark()<<" "<<endl;
