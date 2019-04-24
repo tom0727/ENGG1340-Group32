@@ -97,7 +97,7 @@ bool isalnum(char c) //checking if the char is a Alphabet or number
 //printing the login menu
 /* print the starting menu*/
 void printmenu(){
-  cout<<"******************************"<<endl;
+  cout<<"********************************************************************************************************"<<endl;
   cout<<"Welcome to private accounting system"<<endl;
   cout<<"1.Sign up"<<endl;
   cout<<"2.Login"<<endl;
@@ -141,7 +141,7 @@ bool username_check (string username){
   string file_line;
   while (getline(fin,file_line)){
     if ((file_line.find(username)==0) and (file_line.substr(username.size(),1)=="#")){
-      cout<<"This username has been registered by someone else,please try another one"<<endl;
+      cout<<"This username has been registered by someone else,please try another one: ";
       return 0;
     }
   }
@@ -154,13 +154,14 @@ bool username_check (string username){
 void registeraccount(){
   string username;
   string password;
-  cout<<"******************************"<<endl;
+  cout<<"*****************************************************************************************************"<<endl;
   cout<<"Registration:"<<endl;
   while (true){
-    cout<<"Please settle your username, username should only contain Alphabet or digit"<<endl;
+    cout<<"Username should only contain Alphabet or digit"<<endl;
+    cout<<"Please settle your username: ";
     getline(cin,username);
     if (username_check(username)==true){
-      cout<<"please settle your password"<<endl;
+      cout<<"please settle your password: ";
       getline(cin,password);
       ofstream File ("users.txt",ofstream::app);
       ofstream RecordFile ((username+"_record.txt").c_str());
@@ -204,12 +205,12 @@ bool username_find(string &userrecord, string username){
 }
 
 //To check whether the username and password match. Prompt username and password input
-bool authentification(string &login_user,string &user_password,float &user_budget,float &user_income,float &user_expenditure){
+bool authentification(string &login_user,string &user_password,float &budget,float &income,float &expense){
   string userrecord;
   string password;
   string username;
   string userdata;
-  cout<<"*********************************"<<endl;
+  cout<<"********************************************************************************************************"<<endl;
   cout<<"Login:"<<endl;
   cout<<"Please enter your username: ";
   while (true){
@@ -225,27 +226,27 @@ bool authentification(string &login_user,string &user_password,float &user_budge
         user_password=password;
         userrecord=userrecord.substr(extract_length+1,userrecord.size()-extract_length);
         extract_length=userrecord.find("#");
-        user_budget=stof(userrecord.substr(0,extract_length));
+        budget=stof(userrecord.substr(0,extract_length));
         userrecord=userrecord.substr(extract_length+1,userrecord.size()-extract_length);
         extract_length=userrecord.find("#");
-        user_income=stof(userrecord.substr(0,extract_length));
+        income=stof(userrecord.substr(0,extract_length));
         userrecord=userrecord.substr(extract_length+1,userrecord.size()-extract_length);
-        user_expenditure=stof(userrecord.substr(0,userrecord.find("#")));
+        expense=stof(userrecord.substr(0,userrecord.find("#")));
         return 1;
       }
       else{
-        cout<<"Incorrect password,please enter username again, press Enter to return to main menu"<<endl;
+        cout<<"Incorrect password,please enter username again(press Enter to return to main menu): ";
       }
     }
     else if (username.size()==0){return 0;}
-    else{cout<<"User name not found,please enter username again,press Enter to return to main menu"<<endl;}
+    else{cout<<"User name not found,please enter username again(press Enter to return to main menu): ";}
   }
 }
 
 //                          END of Login function
 //********************************************************************************/
 // main function for part I
-void login(string &login_user,string &user_password,float &user_budget,float &user_income,float &user_expenditure){
+void login(string &login_user,string &user_password,float &budget,float &income,float &expense){
   string choice;
   create_usertxt();
   printmenu();
@@ -256,7 +257,7 @@ void login(string &login_user,string &user_password,float &user_budget,float &us
         printmenu();
       }
     else if (choice=="2"){
-      if (authentification(login_user,user_password,user_budget,user_income,user_expenditure)){break;}
+      if (authentification(login_user,user_password,budget,income,expense)){break;}
       printmenu();
     }
     else if (choice.size()==0){
@@ -311,7 +312,8 @@ void load_userdata(string login_user,  vector<Record> &recordList,  map <string,
 //*************************************************************************************
 //print the second menu about the function avaliable for execution
 void print_menu2(){
-  cout<<"*************************************"<<endl;
+  cout << endl;
+  cout<<"********************************************************************************************************"<<endl;
   cout<<"Function needed to be choose"<<endl;
   cout<<"1.Add"<<endl;
   cout<<"2.Show"<<endl;
@@ -323,7 +325,7 @@ void print_menu2(){
 // *****************************The start of the addition section***********************88
 //check whether the user input function are valid
 bool amount_check(string s_amount){
-  if (!isdigit(s_amount[0]) && s_amount[0]!='-'){return 0;}
+  if (!isdigit(s_amount[0]) && (s_amount[0]!='-' && s_amount[0]!='+')){return 0;}
   int dot_count=0;
   for (int i=1;i<s_amount.length();i++){
     if (!isdigit(s_amount[i]) && s_amount[i]!='.'){
@@ -365,7 +367,7 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   string s_amount;
   string choice_ei;
   // get the amount
-  cout<<"Please indicate the amount: positive number means income and negative number means expenditure: ";
+  cout<<"Please indicate the amount,positive number means income and negative number means expense: ";
   getline(cin,s_amount);
   while (!amount_check(s_amount)){
     cout<<"Invalid amount,please enter again: ";
@@ -378,7 +380,7 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   cout<<"Please enter the date(format:YYYYMMDD): ";
   getline(cin,time);
   while (!time_check(time)||time.size()==0){
-    cout<<"Invalid input,please enter again"<<endl;
+    cout<<"Invalid input,please enter again: ";
     getline(cin,time);
   }
   time=time.substr(0,4)+"-"+time.substr(4,2)+"-"+time.substr(6,2);
@@ -396,15 +398,16 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
 }
 
 // add record from user
-void add(vector<Record> &recordList, map <string,int> &typeList, map<string,int> &methodList, float &user_income, float &user_expenditure){
+void add(vector<Record> &recordList, map <string,int> &typeList, map<string,int> &methodList, float &income, float &expense, float &budget){
   string time,type,method,remark;
   float amount;
   prompt_add_input(amount,time,type,method,remark);
   if (amount>0){
-    user_income+=amount;
+    income+=amount;
   }
   else{
-    user_expenditure-=amount;
+    expense-=amount;  //expense is positive, the amount here is negative
+    if (expense>=budget) {cout<<"The current expense is: "<<expense<< " ,You have exceeded the budget of "<<budget<<endl;}
   }
   Record temp;
   temp.set_amount(amount);
@@ -430,7 +433,8 @@ bool int_check(string amount){
 
 void show_menu()
 {
-  cout << "***********************************" << endl;
+  cout << endl;
+  cout << "***********************************************************************************************" << endl;
   cout << "You are now asking to show Records" << endl;
   cout << "1.show by Date" << endl;
   cout << "2.show by Amount" << endl;
@@ -460,6 +464,7 @@ void show_record(vector<Record> &recordList,int &i)
 
 void show_header()
 {
+  cout << endl;
   cout<<left<<setw(5)<<"Index"<<setw(3)<<"   "<<setw(6)<<"Amount"<<setw(6)<<"      "<<setw(8)<<"Date"<<setw(5)<<"   "<<setw(20)<<"Type"<<setw(22)<<"Method"<<setw(6)<<"Remark"<<endl;
 }
 
@@ -593,32 +598,33 @@ void sort_type(vector<Record> &recordList)
 
 void search_time(vector<Record> &recordList)
 {
+  cout << endl;
   cout << "Please enter a time interval you want to search for" << endl;
   cout << "The format is YYYYMMDD, press Enter to exit" << endl;
-  cout << "Enter 000 to show from the earliest/latest time" << endl;
+  cout << "Enter 0 to show from the earliest/latest time" << endl;
   cout << "Start time: ";
   string starttime,endtime;
   getline(cin,starttime);
   if (starttime=="") {return;}
-  while (!time_check(starttime) && starttime!="000")  //time_check function is in another file
+  while (!time_check(starttime) && starttime!="0")  //time_check function is in another file
   {
     cout << "Invalid input,please enter again" << endl;
     getline (cin,starttime);
-    if (starttime=="000") {return;}
+    if (starttime=="") {return;}
   }
-  if (starttime=="000") {starttime = "00000000";}
+  if (starttime=="0") {starttime = "00000000";}
   starttime=starttime.substr(0,4)+"-"+starttime.substr(4,2)+"-"+starttime.substr(6,2);
 
   cout << "End time: ";
   getline(cin,endtime);
   if (endtime=="") {return;}
-  while (!time_check(endtime) && endtime!="000")  //time_check function is in another file
+  while (!time_check(endtime) && endtime!="0")  //time_check function is in another file
   {
     cout << "Invalid input,please enter again" << endl;
     getline (cin,endtime);
-    if (endtime=="000") {return;}
+    if (endtime=="") {return;}
   }
-  if (endtime=="000") {endtime = "99999999";}
+  if (endtime=="0") {endtime = "99999999";}
   endtime=endtime.substr(0,4)+"-"+endtime.substr(4,2)+"-"+endtime.substr(6,2);
 
   show_header();
@@ -633,13 +639,14 @@ void search_time(vector<Record> &recordList)
 
 void search_amount(vector<Record> &recordList)  //search according to an amount interval
 {
+  cout << endl;
   cout << "Please enter an amount interval you want to search for (press Enter to exit)" << endl;
-  cout << "Enter 000 to show from/until the lowest/highest amount" << endl;
+  cout << "Enter 0 to show from/until the lowest/highest amount" << endl;
   string low,high;
   cout << "Lower amount: ";
   getline(cin,low);
   if (low=="") {return;}
-  while (!amount_check(low) && low!="000")
+  while (!amount_check(low) && low!="0")
   {
     cout << "Invalid input,please enter again: ";
     getline (cin,low);
@@ -649,15 +656,15 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
   cout << "Higher amount: ";
   getline(cin,high);
   if (high=="") {return;}
-  while (!amount_check(high) && high!="000")
+  while (!amount_check(high) && high!="0")
   {
     cout << "Invalid input,please enter again: ";
     getline (cin,high);
     if (high=="") {return;}
   }
   float l,h;
-  if (low=="000") {l=-99999999;} else{l=stof(low);}
-  if (high=="000") {h=99999999;} else {h=stof(high);}
+  if (low=="0") {l=-99999999;} else{l=stof(low);}
+  if (high=="0") {h=99999999;} else {h=stof(high);}
 
   show_header();
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
@@ -734,22 +741,26 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
   }
   int i = stoi(input);
   show_record(recordList,i);
-  cout << "Please edit the record, if you want to keep the origin data, please Enter 000" << endl;
+  cout << "Please edit the record, if you want to keep the origin data, please Enter 0" << endl;
   cout << "Please enter the Amount(positive number means income, negative number means expense): ";
   getline(cin,input);
-  while (!amount_check(input) && input!="000")
+  while (!amount_check(input) && input!="0")
   {
     cout << "Invalid input, please enter again: ";
     getline(cin,input);
   }
-  if (input=="000");
+  if (input=="0");
   else
   {
     float oldamount = recordList[i].get_amount();
     float newamount = stof(input);
-    if (oldamount<0) {expense-=oldamount;}
+    if (oldamount<0) {expense+=oldamount;}  //because the expense here is positive
     else if (oldamount>0) {income-=oldamount;}
-    if (newamount<0) {expense+=newamount;}
+    if (newamount<0) 
+    {
+      expense-=newamount;
+      if (expense>=budget) {cout<<"The current expense is: "<<expense<< " ,You have exceeded the budget of "<<budget<<endl;}  //because the expense here is positive
+    }
     else if (newamount>0) {income+=newamount;}
     recordList[i].set_amount(newamount);
   }
@@ -845,7 +856,7 @@ void show(float &income,float &expense,float &budget,vector<Record> &recordList,
 //********************************************************************************************
 // ************************The start of the write data in to user_record function(Ending funtion)***********
 //write data in to the user's individual record
-void write_data(string &login_user, string &user_password,vector <Record> &recordList,float &user_budget, float &user_income, float &user_expenditure){
+void write_data(string &login_user, string &user_password,vector <Record> &recordList,float &budget, float &income, float &expense){
   //write to update user_record.txt
   ofstream fin((login_user+"_record.txt").c_str());
   if (fin.fail()){
@@ -864,7 +875,7 @@ void write_data(string &login_user, string &user_password,vector <Record> &recor
   string copy_line;
   while (getline(user_file,copy_line)){
     if (copy_line.find(login_user+"#")==0){
-      temp<<login_user<<"#"<<user_password<<"#"<<user_budget<<"#"<<user_income<<"#"<<user_expenditure<<endl;
+      temp<<login_user<<"#"<<user_password<<"#"<<budget<<"#"<<income<<"#"<<expense<<endl;
     }
     else{
       temp<<copy_line<<endl;
@@ -881,25 +892,27 @@ void write_data(string &login_user, string &user_password,vector <Record> &recor
 //************************************************************************************************
 // ************************The start of the financial report function*****************************
 void print_menu3(){
+  cout << endl;
   cout<<"1.Set budget"<<endl;
   cout<<"2.View the type report"<<endl;
   cout<<"3.View the method report"<<endl;
-  cout<<"4.View overall expenditure and income by date"<<endl;
+  cout<<"4.View overall expense and income by date"<<endl;
   cout<<"Please enter your choice(press Enter to Exit): ";
 }
-void set_budget(float &budget){
+void set_budget(float &budget, float &expense){
   string s_budget;
   cout<<"Please enter your expected budget: ";
   getline(cin,s_budget);
-  while (!amount_check(s_budget)){
+  while (!amount_check(s_budget)||s_budget[0]=='-'){
     cout<<"Invalid input, please enter again: ";
     getline(cin,s_budget);
   }
   budget=stof(s_budget);
   cout<<"Budget set successfully"<<endl;
+  if (expense>=budget) {cout<<"The current expense is: "<<expense<< " ,You have exceeded the budget of "<<budget;}
 }
 
-float to_persentage (float amount){
+float to_percentage (float amount){
   return (amount*100);
 }
 
@@ -918,12 +931,13 @@ void Show_Income_Expense_ByType(vector <Record> &recordList,map <string,int> &ty
     typemap[Category_income]=itr->first;
     typemap[Category_expense]=itr->first;
   }
+  cout << endl;
   for (map <float,string>::iterator itr=typemap.begin();itr!=typemap.end();itr++){
     if ((itr->first)>0){
-      cout<<"The "<<left<<setw(10)<<itr->second<<"income      is +"<<fixed<<setprecision(1)<<setw(9)<<itr->first<<" occupying "<<setw(5)<<to_persentage(itr->first/income)<< "% of total income"<<endl;
+      cout<<"The "<<left<<setw(10)<<itr->second<<"income  is +"<<fixed<<setprecision(1)<<setw(9)<<itr->first<<" occupying "<<setw(5)<<to_percentage(itr->first/income)<< "% "<<"of total income"<<endl;
     }
     if ((itr->first)<0){
-      cout<<"The "<<left<<setw(10)<<itr->second<<"expenditure is "<<fixed<<setprecision(1)<<setw(10)<<itr->first<<" occupying "<<setw(5)<<to_persentage(-(itr->first/expense))<<"% of total expenditure"<<endl;
+      cout<<"The "<<left<<setw(10)<<itr->second<<"expense is "<<fixed<<setprecision(1)<<setw(10)<<itr->first<<" occupying "<<setw(5)<<to_percentage(-(itr->first/expense))<<"% "<<"of total expense"<<endl;
     }
   }
 }
@@ -947,35 +961,46 @@ void Show_Income_Expense_ByMethod(vector <Record> &recordList,map <string,int> &
     methodmap[Category_income]=itr->first;
     methodmap[Category_expense]=itr->first;
   }
+  cout << endl;
   for (map <float,string>::iterator itr=methodmap.begin();itr!=methodmap.end();itr++){
     if ((itr->first)>0){
-      cout<<"The income      via "<<left<<setw(10)<<itr->second<<" is +"<<fixed<<setprecision(1)<<setw(9)<<itr->first<<" occupying "<<setw(5)<<to_persentage(itr->first/income)<<"% of total income"<<endl;
+      cout<<"The income  via "<<left<<setw(10)<<itr->second<<" is +"<<fixed<<setprecision(1)<<setw(9)<<itr->first<<" occupying "<<setw(5)<<to_percentage(itr->first/income)<<"% "<<"of total income"<<endl;
     }
     if ((itr->first)<0){
-      cout<<"The expenditure via "<<left<<setw(10)<<itr->second<<" is "<<fixed<<setprecision(1)<<setw(10)<<itr->first<<" occupying "<<setw(5)<<to_persentage(-(itr->first/expense))<<"% of total expenditure"<<endl;
+      cout<<"The expense via "<<left<<setw(10)<<itr->second<<" is "<<fixed<<setprecision(1)<<setw(10)<<itr->first<<" occupying "<<setw(5)<<to_percentage(-(itr->first/expense))<<"% "<<"of total expense"<<endl;
     }
   }
 }
 
 void Show_Income_Expense_ByDate(vector <Record> &recordList){
-  cout << "Please enter a time interval you want to search for(The format is YYYYMMDD): " << endl;
+  cout << endl;
+  cout << "Please enter a time interval you want to search for" << endl;
+  cout << "The format is YYYYMMDD, press Enter to exit" << endl;
+  cout << "Enter 0 to show from the earliest/latest time" << endl;
   cout << "Start time: ";
   string starttime,endtime;
   getline(cin,starttime);
-  while (!time_check(starttime))  //time_check function is in another file
+
+  if (starttime=="") {return;}
+  while (!time_check(starttime) && starttime!="0")  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again: ";
+    cout << "Invalid input,please enter again" << endl;
     getline (cin,starttime);
+    if (starttime=="") {return;}
   }
+  if (starttime=="0") {starttime = "00000000";}
   starttime=starttime.substr(0,4)+"-"+starttime.substr(4,2)+"-"+starttime.substr(6,2);
 
-  cout << "End time: "<<endl;
+  cout << "End time: ";
   getline(cin,endtime);
-  while (!time_check(endtime))  //time_check function is in another file
+  if (endtime=="") {return;}
+  while (!time_check(endtime) && endtime!="0")  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again: " << endl;
+    cout << "Invalid input,please enter again" << endl;
     getline (cin,endtime);
+    if (endtime=="") {return;}
   }
+  if (endtime=="0") {endtime = "99999999";}
   endtime=endtime.substr(0,4)+"-"+endtime.substr(4,2)+"-"+endtime.substr(6,2);
 
   float interval_expense=0,interval_income=0;
@@ -985,19 +1010,21 @@ void Show_Income_Expense_ByDate(vector <Record> &recordList){
       if (recordList[i].get_amount()<0){interval_expense+=recordList[i].get_amount();}
     }
   }
+  cout << endl;
   cout<<"The total income      in this interval is: +"<<interval_income<<endl;
-  cout<<"The total expenditure in this interval is:"<<interval_expense<<endl;
+  cout<<"The total expense in this interval is: "<<interval_expense<<endl;
 }
 
 
 void financial_report(vector <Record> &recordList,map <string,int> &typeList, map <string,int> &methodList,float &income,float &expense,float &budget){
+  cout << endl;
   cout<<"You have entered the financial report mode"<<endl;
   while (true)
   {
     string choice;
     print_menu3();
     getline(cin,choice);
-    if (choice=="1"){set_budget(budget);}
+    if (choice=="1"){set_budget(budget,expense);}
     else if (choice=="2"){Show_Income_Expense_ByType(recordList,typeList,income,expense);}
     else if (choice=="3"){Show_Income_Expense_ByMethod(recordList,methodList,income,expense);}
     else if (choice=="4"){Show_Income_Expense_ByDate(recordList);}
@@ -1013,7 +1040,7 @@ void financial_report(vector <Record> &recordList,map <string,int> &typeList, ma
 //****************************The start of the password change function***********************
 void change_password(string &login_user,string &user_password){
    string username,password;
-   cout<<"***************************************"<<endl;
+   cout<<"**********************************************************************"<<endl;
    cout<<"You have enter the password changing mode"<<endl;
    cout<<"Please enter your username: ";
    while (true){
@@ -1050,11 +1077,11 @@ void change_password(string &login_user,string &user_password){
 //               main execution function
 int main()
 { string login_user="",user_password="";
-  float user_budget,user_income,user_expenditure;
+  float budget=99999999,income,expense;
   vector<Record> recordList;
   map <string,int> typeList;
   map <string,int> methodList;
-  login(login_user,user_password,user_budget,user_income,user_expenditure);
+  login(login_user,user_password,budget,income,expense);
   load_userdata(login_user,recordList,typeList,methodList);
   // The overall menu of function avaliable for execution after login
   string choice;
@@ -1062,11 +1089,11 @@ int main()
   {
     print_menu2();
     getline(cin,choice);
-    if (choice=="1"){add(recordList,typeList,methodList,user_income,user_expenditure);}
-    else if (choice=="2"){show(user_income,user_expenditure,user_budget,recordList,methodList,typeList);}
-    else if (choice=="3"){financial_report(recordList,typeList,methodList,user_income,user_expenditure,user_budget);}
+    if (choice=="1"){add(recordList,typeList,methodList,income,expense,budget);}
+    else if (choice=="2"){show(income,expense,budget,recordList,methodList,typeList);}
+    else if (choice=="3"){financial_report(recordList,typeList,methodList,income,expense,budget);}
     else if (choice=="4"){change_password(login_user,user_password);}
-    else if (choice==""){write_data(login_user,user_password,recordList,user_budget,user_income,user_expenditure);break;}
+    else if (choice==""){write_data(login_user,user_password,recordList,budget,income,expense);break;}
     else {cout<<"Invalid input, please enter again: ";}
   }
   /*for (int i=0;i<recordList.size();i++){
