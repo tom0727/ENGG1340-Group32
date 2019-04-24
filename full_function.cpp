@@ -101,7 +101,7 @@ void printmenu(){
   cout<<"Welcome to private accounting system"<<endl;
   cout<<"1.Sign up"<<endl;
   cout<<"2.Login"<<endl;
-  cout<<"Please select the menu by entering corresponding number(press Enter to exit): ";
+  cout<<"Please select the menu by entering corresponding number(press Enter to Exit): ";
 }
 
 //***********************************************************************
@@ -234,11 +234,11 @@ bool authentification(string &login_user,string &user_password,float &user_budge
         return 1;
       }
       else{
-        cout<<"Incorrect password,please enter username again, Input 000 to return to main menu"<<endl;
+        cout<<"Incorrect password,please enter username again, press Enter to return to main menu"<<endl;
       }
     }
-    else if (username=="000"){return 0;}
-    else{cout<<"User name not found,please enter username again,Input 000 to return to main menu"<<endl;}
+    else if (username.size()==0){return 0;}
+    else{cout<<"User name not found,please enter username again,press Enter to return to main menu"<<endl;}
   }
 }
 
@@ -259,11 +259,11 @@ void login(string &login_user,string &user_password,float &user_budget,float &us
       if (authentification(login_user,user_password,user_budget,user_income,user_expenditure)){break;}
       printmenu();
     }
-    else if (choice==""){
+    else if (choice.size()==0){
         exit(1);
       }
     else{
-        cout<<"Invalid input, please enter again: ";
+        cout<<"Invalid input, please enter again: (press Enter to exit)";
     }
   }
 }
@@ -323,8 +323,7 @@ void print_menu2(){
 // *****************************The start of the addition section***********************88
 //check whether the user input function are valid
 bool amount_check(string s_amount){
-  if (s_amount.size()==0) {return 1;}
-  if (s_amount[0]!='+' && s_amount[0]!='-'){return 0;}
+  if (!isdigit(s_amount[0]) && s_amount[0]!='-'){return 0;}
   int dot_count=0;
   for (int i=1;i<s_amount.length();i++){
     if (!isdigit(s_amount[i]) && s_amount[i]!='.'){
@@ -366,7 +365,7 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   string s_amount;
   string choice_ei;
   // get the amount
-  cout<<"Please indicate the amount: + means income /- means expenditure: ";
+  cout<<"Please indicate the amount: positive number means income and negative number means expenditure: ";
   getline(cin,s_amount);
   while (!amount_check(s_amount)){
     cout<<"Invalid amount,please enter again: ";
@@ -443,8 +442,7 @@ void show_menu()
   cout << "8.search by Type" << endl;
   cout << "d.delete records" << endl;
   cout << "e.edit records" << endl;
-  cout << "9.Exit" << endl;
-  cout << "Please enter an integer or char to select: ";
+  cout << "Please enter an integer to select, press Enter to exit: ";
 }
 
 void show_record(vector<Record> &recordList,int &i)
@@ -487,13 +485,13 @@ void sort_time(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5) 
+    if (count==5)
     {
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
       {
         getline(cin,option);
-        if (option=="") {return;}
+        if (option.size()==0) {return;}
         else if (option=="n") {count=0; break;}
         else {cout << "Invalid input,please Enter again: ";}
       }
@@ -513,7 +511,7 @@ void sort_amount(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++,count++;
-    if (count==5) 
+    if (count==5)
     {
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
@@ -531,7 +529,7 @@ void sort_amount(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i--;count++;
-    if (count==5) 
+    if (count==5)
     {
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
@@ -555,7 +553,7 @@ void sort_method(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5) 
+    if (count==5)
     {
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
@@ -579,7 +577,7 @@ void sort_type(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5) 
+    if (count==5)
     {
       cout << "Please Enter n to view next page, press Enter to Exit: ";
       while (true)
@@ -596,30 +594,31 @@ void sort_type(vector<Record> &recordList)
 void search_time(vector<Record> &recordList)
 {
   cout << "Please enter a time interval you want to search for" << endl;
-  cout << "The format is YYYYMMDD, enter 000 to exit" << endl;
-  cout << "Press Enter to show from the earliest/latest time" << endl;
+  cout << "The format is YYYYMMDD, press Enter to exit" << endl;
+  cout << "Enter 000 to show from the earliest/latest time" << endl;
   cout << "Start time: ";
   string starttime,endtime;
   getline(cin,starttime);
-  if (starttime=="000") {return;}
-  while (!time_check(starttime))  //time_check function is in another file
+  if (starttime=="") {return;}
+  while (!time_check(starttime) && starttime!="000")  //time_check function is in another file
   {
     cout << "Invalid input,please enter again" << endl;
     getline (cin,starttime);
     if (starttime=="000") {return;}
   }
+  if (starttime=="000") {starttime = "00000000";}
   starttime=starttime.substr(0,4)+"-"+starttime.substr(4,2)+"-"+starttime.substr(6,2);
 
   cout << "End time: ";
   getline(cin,endtime);
-  if (endtime=="000") {return;}
-  while (!time_check(endtime))  //time_check function is in another file
+  if (endtime=="") {return;}
+  while (!time_check(endtime) && endtime!="000")  //time_check function is in another file
   {
     cout << "Invalid input,please enter again" << endl;
     getline (cin,endtime);
     if (endtime=="000") {return;}
   }
-  if (endtime.size()==0) {endtime = "9999-99-99";}
+  if (endtime=="000") {endtime = "99999999";}
   endtime=endtime.substr(0,4)+"-"+endtime.substr(4,2)+"-"+endtime.substr(6,2);
 
   show_header();
@@ -634,31 +633,31 @@ void search_time(vector<Record> &recordList)
 
 void search_amount(vector<Record> &recordList)  //search according to an amount interval
 {
-  cout << "Please enter an amount interval you want to search for (enter 000 to exit)" << endl;
-  cout << "Press enter to show from/until the lowest/highest amount" << endl;
+  cout << "Please enter an amount interval you want to search for (press Enter to exit)" << endl;
+  cout << "Enter 000 to show from/until the lowest/highest amount" << endl;
   string low,high;
   cout << "Lower amount: ";
   getline(cin,low);
-  if (low=="000") {return;}
-  while (!amount_check(low))
+  if (low=="") {return;}
+  while (!amount_check(low) && low!="000")
   {
     cout << "Invalid input,please enter again: ";
     getline (cin,low);
-    if (low=="000") {return;}
+    if (low=="") {return;}
   }
 
   cout << "Higher amount: ";
   getline(cin,high);
-  if (high=="000") {return;}
-  while (!amount_check(high))
+  if (high=="") {return;}
+  while (!amount_check(high) && high!="000")
   {
     cout << "Invalid input,please enter again: ";
     getline (cin,high);
-    if (high=="000") {return;}
+    if (high=="") {return;}
   }
   float l,h;
-  if (low.size()==0) {l=-99999999;} else{l=stof(low);}
-  if (high.size()==0) {h=99999999;} else {h=stof(high);}
+  if (low=="000") {l=-99999999;} else{l=stof(low);}
+  if (high=="000") {h=99999999;} else {h=stof(high);}
 
   show_header();
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
@@ -675,7 +674,7 @@ void search_method(vector<Record> &recordList,map<string,int> &methodList)
   for (itr = methodList.begin();itr!=methodList.end();itr++)
   {cout << itr->first << "  |  ";}  //showing existing method
   cout << endl;
-  cout << "Please enter a method you want to search for: ";
+  cout << "Please enter a method you want to search for: press Enter to exit";
   string method;
   getline(cin,method);
   transform_lower(method);  //transform "method" into lower case
@@ -694,7 +693,7 @@ void search_type(vector<Record> &recordList,map<string,int> &typeList)
   for (itr=typeList.begin();itr!=typeList.end();itr++)
   {cout << (*itr).first << "  |  ";}  //showing existing type
   cout << endl;
-  cout << "Please enter a type you want to search for: ";
+  cout << "Please enter a type you want to search for: press Enter to exit";
   string type;
   getline(cin,type);
   transform_lower(type);  //transform "type" into lower case
@@ -723,7 +722,7 @@ void update_map(map<string,int> &m,string key,int change)
 void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
   sort_time(recordList);
-  cout << "You are now in the edit mode,please enter the corresponding index to edit record(press Enter to exit): ";
+  cout << "You are now in the edit mode,please enter the corresponding index to edit record(press Enter to Exit): ";
   string input;
   getline(cin,input);
   if (input.size()==0) {return;}
@@ -735,15 +734,15 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
   }
   int i = stoi(input);
   show_record(recordList,i);
-  cout << "Please edit the record, if you want to keep the origin data, please press Enter" << endl;
-  cout << "Please enter the Amount(+ means income,- means expense): ";
+  cout << "Please edit the record, if you want to keep the origin data, please Enter 000" << endl;
+  cout << "Please enter the Amount(positive number means income, negative number means expense): ";
   getline(cin,input);
-  while (!amount_check(input))
+  while (!amount_check(input) && input!="000")
   {
     cout << "Invalid input, please enter again: ";
     getline(cin,input);
   }
-  if (input.size()==0);
+  if (input=="000");
   else
   {
     float oldamount = recordList[i].get_amount();
@@ -798,7 +797,7 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
 void delete_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
   sort_time(recordList);
-  cout << "You are now in the delete mode,please enter the corresponding integer to delete record(press enter to exit): ";
+  cout << "You are now in the delete mode,please enter the corresponding integer to delete record(press Enter to Exit): ";
   string input;
   getline(cin,input);
   if (input.size()==0) {return;}
@@ -835,7 +834,7 @@ void show(float &income,float &expense,float &budget,vector<Record> &recordList,
     else if(choice=="6") {search_amount(recordList);}
     else if(choice=="7") {search_method(recordList,methodList);}
     else if(choice=="8") {search_type(recordList,typeList);}
-    else if(choice=="9") {break;}
+    else if(choice=="") {break;}
     else if(choice=="d") {delete_mode(income,expense,budget,recordList,methodList,typeList);}
     else if(choice=="e") {edit_mode(income,expense,budget,recordList,methodList,typeList);}
     else {cout << "Invalid option,please enter again: ";}
@@ -886,13 +885,13 @@ void print_menu3(){
   cout<<"2.View the type report"<<endl;
   cout<<"3.View the method report"<<endl;
   cout<<"4.View overall expenditure and income by date"<<endl;
-  cout<<"Please enter your choice(press Enter to exit): ";
+  cout<<"Please enter your choice(press Enter to Exit): ";
 }
 void set_budget(float &budget){
   string s_budget;
   cout<<"Please enter your expected budget: ";
   getline(cin,s_budget);
-  while (!amount_check(s_budget) || s_budget[0]=='-'){
+  while (!amount_check(s_budget)){
     cout<<"Invalid input, please enter again: ";
     getline(cin,s_budget);
   }
@@ -1012,17 +1011,17 @@ void financial_report(vector <Record> &recordList,map <string,int> &typeList, ma
 
 //*************************The end of the financial report function*************************
 //****************************The start of the password change function***********************
-void change_password(string &user_password){
-   string username,userrecord,password;
+void change_password(string &login_user,string &user_password){
+   string username,password;
    cout<<"***************************************"<<endl;
    cout<<"You have enter the password changing mode"<<endl;
    cout<<"Please enter your username: ";
    while (true){
     getline(cin,username);
-    if (username_find(userrecord,username)){
+    if (username==login_user){
       cout<<"Please enter the password: ";
       getline(cin,password);
-      if ((userrecord.find(username+"#"+password)==0) and (userrecord.substr(username.size()+1+password.size(),1)=="#")){
+      if (password==user_password){
         break;
       }
       else{cout<<"Incorrect password, please enter the username again: ";}
@@ -1066,7 +1065,7 @@ int main()
     if (choice=="1"){add(recordList,typeList,methodList,user_income,user_expenditure);}
     else if (choice=="2"){show(user_income,user_expenditure,user_budget,recordList,methodList,typeList);}
     else if (choice=="3"){financial_report(recordList,typeList,methodList,user_income,user_expenditure,user_budget);}
-    else if (choice=="4"){change_password(user_password);}
+    else if (choice=="4"){change_password(login_user,user_password);}
     else if (choice==""){write_data(login_user,user_password,recordList,user_budget,user_income,user_expenditure);break;}
     else {cout<<"Invalid input, please enter again: ";}
   }
