@@ -158,7 +158,7 @@ void registeraccount(){
   cout<<"Registration:"<<endl;
   while (true){
     cout<<"Username should only contain Alphabet or digit"<<endl;
-    cout<<"Please settle your username: (Press Enter to Exit)";
+    cout<<"Please settle your username (Press Enter to Exit): ";
     getline(cin,username);
     if (username==""){return;}
     if (username_check(username)==true){
@@ -632,7 +632,7 @@ void search_time(vector<Record> &recordList)
   if (starttime=="") {return;}
   while (!time_check(starttime) && starttime!="0")  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again" << endl;
+    cout << "Invalid input,please enter again: ";
     getline (cin,starttime);
     if (starttime=="") {return;}
   }
@@ -644,7 +644,7 @@ void search_time(vector<Record> &recordList)
   if (endtime=="") {return;}
   while (!time_check(endtime) && endtime!="0")  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again" << endl;
+    cout << "Invalid input,please enter again: ";
     getline (cin,endtime);
     if (endtime=="") {return;}
   }
@@ -1415,20 +1415,20 @@ void financial_report(vector <Record> &recordList,map <string,int> &typeList, ma
 void change_password(string &login_user,string &user_password){
    string username,password;
    cout<<"**********************************************************************"<<endl;
-   cout<<"You have enter the password changing mode"<<endl;
-   cout<<"Please enter your username: (Press Enter to Exit)";
+   cout<<"You are changing your password"<<endl;
+   cout<<"Please enter your username(Press Enter to Exit): ";
    while (true){
     getline(cin,username);
     if (username==""){return;}
     if (username==login_user){
-      cout<<"Please enter the password: ";
+      cout<<"Please enter the old password: ";
       getline(cin,password);
       if (password==user_password){
         break;
       }
-      else{cout<<"Incorrect password, please enter the username again: (Press Enter to Exit)";}
+      else{cout<<"Incorrect password, please enter the username again(Press Enter to Exit):";}
     }
-    else{cout<<"Incorrect username, please enter the username again: (Press Enter to Exit)";}
+    else{cout<<"Incorrect username, please enter the username again(Press Enter to Exit): ";}
   }
   string password_1,password_2;
   while (true){
