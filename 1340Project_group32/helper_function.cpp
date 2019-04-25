@@ -62,7 +62,8 @@ bool amount_check(string s_amount){
   return 1;
 }
 
-bool time_check(string time){
+bool time_check(string time)  //check if this string is a valid date format
+{
   if (time.length()==0) {return 1;}
   if (time.length()!=8){ return 0;}
   for (int i=0;i<time.length();i++){
@@ -74,6 +75,7 @@ bool time_check(string time){
   if (time.substr(6,2)>"31" or time.substr(6,2)<"01"){ return 0;} //check if "day" is valid
   return 1;
 }
+
 //transform all the user input data to lower case
 void transform_lower (string &content){
   for (unsigned i=0;i<content.size();i++){
@@ -81,7 +83,8 @@ void transform_lower (string &content){
   }
 }
 
-bool int_check(string amount){
+bool int_check(string amount)  //check if this is an integer
+{
   for (int i=0;i<amount.length();i++){
     if (!isdigit(amount[i])){
       return 0;
@@ -102,7 +105,8 @@ bool compareMethod(Record &r1,Record &r2)
 bool compareType(Record &r1,Record &r2)
 { return (r1.get_type() < r2.get_type()); }
 
-bool time_check2(string time){
+bool time_check2(string time)  //only used in financial_report part, the format is YYYYMM
+{
   if (time.length()!=6){ return 0;}
   for (int i=0;i<time.length();i++){
     if (!isdigit(time[i])){
