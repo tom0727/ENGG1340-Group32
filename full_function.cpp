@@ -27,7 +27,7 @@ class Record
     string get_method();
     string get_remark();
 
- //private:
+ private:
     float amount;
     string time;  //time format is: "YYYY-MM-DD"
     string type; //such as "food"
@@ -117,8 +117,7 @@ void create_usertxt(){
   }
 }
 // End of the initializaiton function
-// To be MODIFY
-//Registration function
+// Registration function
 
 /* check whether username_input is in the correct format
 1. It should be alphabet and number character only
