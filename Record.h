@@ -81,4 +81,3 @@ void Show_Income_Expense_ByMonth(vector <Record> &);
 void Show_Income_Expense_ByDate(vector <Record> &);
 void financial_report(vector <Record> &,map <string,int> &, map <string,int> &,float &,float &,float &);
 void change_password(string &,string &);
-int main();
