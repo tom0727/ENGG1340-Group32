@@ -1,10 +1,8 @@
 #include <iostream>
 #include <string>
-#include <cstdlib>
 #include <iomanip>
 #include <fstream>
 #include <cctype>
-#include <cstdlib>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
