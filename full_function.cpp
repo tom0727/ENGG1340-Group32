@@ -167,7 +167,6 @@ void registeraccount(){
       ofstream File ("users.txt",ofstream::app);
       ofstream RecordFile ((username+"_record.txt").c_str());
       if (File.fail()){
-        cout<<"Fail to open users.txt"<<endl;
         exit(1);
       }
       File<<username<<"#"<<password<<"#"<<0<<"#"<<0<<"#"<<0<<endl;
@@ -371,9 +370,9 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   {
     getline(cin,s_amount);
     if (s_amount=="") {cout << "Amount cannot be empty, please enter again: "; continue;}
-    else if (amount_check(s_amount)) 
+    else if (amount_check(s_amount))
     {
-      amount=stof(s_amount); 
+      amount=stof(s_amount);
       if (amount==0) {cout<<"Amount cannot start with 0, please enter again: "; continue;}
       break;
     }
@@ -644,7 +643,7 @@ void search_time(vector<Record> &recordList)
   if (endtime=="") {return;}
   while (!time_check(endtime) && endtime!="0")  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again: ";
+    cout << "Invalid input,please enter again: " ;
     getline (cin,endtime);
     if (endtime=="") {return;}
   }
@@ -764,7 +763,7 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     if (option=="") {return;}
     else if (option=="0") {break;}
     else if (amount_check(option))
-    {    
+    {
       float oldamount = recordList[i].get_amount();
       float newamount = stof(option);
       if (oldamount<0) {expense+=oldamount;}  //because the expense here is positive
@@ -799,7 +798,7 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     getline(cin,option);
     if (option=="") {return;}
     else if (option=="0") {break;}
-    else 
+    else
     {
       string oldtype = recordList[i].get_type();
       string newtype = option;
@@ -810,14 +809,14 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     }
   }
 
-  
-  cout << "Please enter the Method: ";  
+
+  cout << "Please enter the Method: ";
   while (true)
   {
     getline(cin,option);
     if (option=="") {return;}
     else if (option=="0") {break;}
-    else 
+    else
     {
       string oldmethod = recordList[i].get_method();
       string newmethod = option;
@@ -826,7 +825,7 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
       recordList[i].set_method(option);
       break;
     }
-  } 
+  }
 
   cout << "Please enter the Remark: ";
   while (true)
@@ -861,9 +860,9 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
         getline(cin,option);
         if (option=="") {return;}
         else if (option=="n") {count=0; cout<<endl; break;}
-        else if (int_check(option)) 
+        else if (int_check(option))
         {
-          int i= stoi(option); 
+          int i= stoi(option);
           if (i>=recordList.size()) {cout << "Index does not exist, please enter again: ";}
           else {edit_record(income,expense,budget,recordList,methodList,typeList,i);return;}
         }
@@ -876,7 +875,7 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
   {
     getline(cin,option);
     if (option=="") {return;}
-    else if (int_check(option)) 
+    else if (int_check(option))
     {
       int i= stoi(option);
       if (i>=recordList.size()) {cout << "Index does not exist, please enter again: ";}
@@ -900,7 +899,7 @@ void delete_record(float &income,float &expense,float &budget,vector<Record> &re
 
 
 void delete_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
-{  
+{
   string option;
   sort(recordList.begin(),recordList.end(),compareTime);
   cout << "You are now in the delete mode" << endl << endl;
@@ -921,22 +920,22 @@ void delete_mode(float &income,float &expense,float &budget,vector<Record> &reco
         getline(cin,option);
         if (option=="") {return;}
         else if (option=="n") {count=0; cout<<endl; break;}
-        else if (int_check(option)) 
+        else if (int_check(option))
         {
-          int i= stoi(option); 
+          int i= stoi(option);
           if (i>=recordList.size()) {cout << "Index does not exist, please enter again: ";}
           else {delete_record(income,expense,budget,recordList,methodList,typeList,i);return;}
         }
         else {cout << "Invalid input,please Enter again: ";}
       }
     }
-  } 
+  }
   cout<<endl<< "Please enter the corresponding index to delete record(press Enter to Exit): ";
   while (true)
   {
     getline(cin,option);
     if (option=="") {return;}
-    else if (int_check(option)) 
+    else if (int_check(option))
     {
       int i= stoi(option);
       if (i>=recordList.size()) {cout << "Index does not exist, please enter again: ";}
@@ -1251,7 +1250,7 @@ void print_graph2 (map <string,float> &timemap_income,map <string,float> &timema
          cout<<"        ";
        }
        else if ((itr->second/expense)+j*0.05<0.05){cout<<fixed<<setprecision(1)<<left<<setw(5)<<to_percentage(-(itr->second/expense))<<"%    ";}
-       else if ((itr->second/expense)+j*0.05<0.10 && (itr->second/expense)+j*0.05>=0.05){cout<<fixed<<left<<setprecision(1)<<setw(10)<<(itr->second);}
+       else if ((itr->second/expense)+j*0.05<0.10 && (itr->second/expense)+j*0.05>=0.05){cout<<fixed<<left<<setprecision(1)<<setw(10)<<((itr->second==0)? (itr->second):(-itr->second));}
        else{cout<<"          ";};
      }
      cout<<endl;
@@ -1356,7 +1355,7 @@ void Show_Income_Expense_ByDate(vector <Record> &recordList){
   if (starttime=="") {return;}
   while (!time_check(starttime) && starttime!="0")  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again" << endl;
+    cout << "Invalid input,please enter again: ";
     getline (cin,starttime);
     if (starttime=="") {return;}
   }
@@ -1368,7 +1367,7 @@ void Show_Income_Expense_ByDate(vector <Record> &recordList){
   if (endtime=="") {return;}
   while (!time_check(endtime) && endtime!="0")  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again" << endl;
+    cout << "Invalid input,please enter again: " ;
     getline (cin,endtime);
     if (endtime=="") {return;}
   }
@@ -1428,7 +1427,7 @@ void change_password(string &login_user,string &user_password){
       }
       else{cout<<"Incorrect password, please enter the username again(Press Enter to Exit):";}
     }
-    else{cout<<"Incorrect username, please enter the username again(Press Enter to Exit): ";}
+    else{cout<<"Incorrect password, please enter the username again(Press Enter to Exit):";}
   }
   string password_1,password_2;
   while (true){
