@@ -366,42 +366,50 @@ void transform_lower (string &content){
 //get the record from user input/ input promotion
 void prompt_add_input(float &amount,string &time,string &type,string &method,string &remark){
   string s_amount;
-  string choice_ei;
-  // get the amount
   cout<<"Please indicate the amount,positive number means income and negative number means expense: ";
-  getline(cin,s_amount);
-  while (!amount_check(s_amount)){
-    cout<<"Invalid amount,please enter again: ";
+  while (true)
+  {
     getline(cin,s_amount);
+    if (s_amount=="") {cout << "Amount cannot be empty, please enter again: "; continue;}
+    else if (amount_check(s_amount)) 
+    {
+      amount=stof(s_amount); 
+      if (amount==0) {cout<<"Amount cannot start with 0, please enter again: "; continue;}
+      break;
+    }
+    else {cout<<"Invalid amount,please enter again: ";}
   }
-  //manuipulate the amount check
-  if (s_amount.size()==0) {amount=0;}
-  else {amount=stof(s_amount);}
   //get the time
   cout<<"Please enter the date(format:YYYYMMDD): ";
-  getline(cin,time);
-  while (!time_check(time)||time.size()==0){
-    cout<<"Invalid input,please enter again: ";
+  while (true)
+  {
     getline(cin,time);
+    if (time=="") {cout << "Time cannot be empty, please enter again: "; continue;}
+    else if (time_check(time)) {break;}
+    else {cout<<"Invalid amount,please enter again: ";}
   }
   time=time.substr(0,4)+"-"+time.substr(4,2)+"-"+time.substr(6,2);
   transform_lower(time);
-  //get type/method/remark
 
   cout<<"Please enter the type of expense/income: ";
-  getline(cin,type);
-  while (type==""){
-    cout<<"Type can not be empty"<<endl;
+  while (true)
+  {
     getline(cin,type);
+    if (type=="") {cout<<"Type can not be empty, please enter again: ";}
+    else {break;}
   }
   transform_lower(type);
+
+
   cout<<"Please enter the payment method of expense/income: ";
-  getline(cin,method);
-  while (method==""){
-    cout<<"Method can not be empty"<<endl;
+  while(true)
+  {
     getline(cin,method);
+    if (method=="") {cout<<"Method can not be empty, please enter again: ";}
+    else {break;}
   }
   transform_lower(method);
+
   cout<<"Please add some remark to the record: ";
   getline(cin,remark);
   transform_lower(remark);
@@ -501,7 +509,7 @@ void sort_time(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5)
+    if (count==5&& i!=recordList.size())
     {
       cout << endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
@@ -528,7 +536,7 @@ void sort_amount(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++,count++;
-    if (count==5)
+    if (count==5&& i!=recordList.size())
     {
       cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
@@ -547,7 +555,7 @@ void sort_amount(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i--;count++;
-    if (count==5)
+    if (count==5&& i!=negative_index-1)
     {
       cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
@@ -572,7 +580,7 @@ void sort_method(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5)
+    if (count==5&& i!=recordList.size())
     {
       cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
@@ -597,7 +605,7 @@ void sort_type(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5)
+    if (count==5&& i!=recordList.size())
     {
       cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
@@ -785,35 +793,49 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     else {cout << "Invalid option, please enter again: ";}
   }
 
-  // PLEASE modify the lower part to while(true)
   cout << "Please enter the Type: ";
-  getline(cin,option);
-  if (option=="0");
-  else
+  while (true)
   {
-    string oldtype = recordList[i].get_type();
-    string newtype = option;
-    update_map(typeList,oldtype,-1);
-    update_map(typeList,newtype,1);
-    recordList[i].set_type(option);
-  }  
-  
-  cout << "Please enter the Method: ";
-  getline(cin,option);
-  if (option=="0");
-  else
-  {
-    string oldmethod = recordList[i].get_method();
-    string newmethod = option;
-    update_map(methodList,oldmethod,-1);
-    update_map(methodList,newmethod,1);
-    recordList[i].set_method(option);
+    getline(cin,option);
+    if (option=="") {return;}
+    else if (option=="0") {break;}
+    else 
+    {
+      string oldtype = recordList[i].get_type();
+      string newtype = option;
+      update_map(typeList,oldtype,-1);
+      update_map(typeList,newtype,1);
+      recordList[i].set_type(option);
+      break;
+    }
   }
 
+  
+  cout << "Please enter the Method: ";  
+  while (true)
+  {
+    getline(cin,option);
+    if (option=="") {return;}
+    else if (option=="0") {break;}
+    else 
+    {
+      string oldmethod = recordList[i].get_method();
+      string newmethod = option;
+      update_map(methodList,oldmethod,-1);
+      update_map(methodList,newmethod,1);
+      recordList[i].set_method(option);
+      break;
+    }
+  } 
+
   cout << "Please enter the Remark: ";
-  getline(cin,option);
-  if (option=="0");
-  else {recordList[i].set_remark(option);}  
+  while (true)
+  {
+    getline(cin,option);
+    if (option=="") {return;}
+    else if (option=="0") {break;}
+    else {recordList[i].set_remark(option); break;}
+  }
 }
 
 
@@ -830,7 +852,7 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5)
+    if (count==5&& i!=recordList.size())
     {
       cout << endl;
       cout << "Please enter the corresponding index to edit record, enter n to view next page(press Enter to Exit): ";
@@ -841,9 +863,9 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
         else if (option=="n") {count=0; cout<<endl; break;}
         else if (int_check(option)) 
         {
-          int i= stof(option); 
+          int i= stoi(option); 
           if (i>=recordList.size()) {cout << "Index does not exist, please enter again: ";}
-          else {edit_record(income,expense,budget,recordList,methodList,typeList,i);}
+          else {edit_record(income,expense,budget,recordList,methodList,typeList,i);return;}
         }
         else {cout << "Invalid input,please Enter again: ";}
       }
@@ -856,29 +878,16 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
     if (option=="") {return;}
     else if (int_check(option)) 
     {
-      int i= stof(option);
+      int i= stoi(option);
       if (i>=recordList.size()) {cout << "Index does not exist, please enter again: ";}
-      else {edit_record(income,expense,budget,recordList,methodList,typeList,i);}
+      else {edit_record(income,expense,budget,recordList,methodList,typeList,i);return;}
     }
     else {cout << "Invalid input,please Enter again: ";}
   }
 }
 
-
-void delete_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
+void delete_record(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList,int i)
 {
-  sort_time(recordList); cout<<endl;
-  cout << "You are now in the delete mode,please enter the corresponding integer to delete record(press Enter to Exit): ";
-  string input;
-  getline(cin,input);
-  if (input.size()==0) {return;}
-  while (!int_check(input))
-  {
-    cout << "Invalid input, please enter again: ";
-    getline(cin,input);
-    if (input.size()==0) {return;}
-  }
-  int i = stoi(input);
   float oldamount = recordList[i].get_amount();
   if (oldamount<0) {expense-=oldamount;}
   else if (oldamount>0) {income-=oldamount;}
@@ -887,6 +896,54 @@ void delete_mode(float &income,float &expense,float &budget,vector<Record> &reco
   string oldtype = recordList[i].get_type();
   update_map(typeList,oldtype,-1);
   recordList.erase(recordList.begin()+i);
+}
+
+
+void delete_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
+{  
+  string option;
+  sort(recordList.begin(),recordList.end(),compareTime);
+  cout << "You are now in the delete mode" << endl << endl;
+  show_header();
+  int i=0,count=0;
+
+  //sort_time(recordList); cout<<endl;
+  while (i<recordList.size())
+  {
+    show_record(recordList,i);
+    i++; count++;
+    if (count==5 && i!=recordList.size())
+    {
+      cout << endl;
+      cout << "Please enter the corresponding index to delete record, enter n to view next page(press Enter to Exit): ";
+      while (true)
+      {
+        getline(cin,option);
+        if (option=="") {return;}
+        else if (option=="n") {count=0; cout<<endl; break;}
+        else if (int_check(option)) 
+        {
+          int i= stoi(option); 
+          if (i>=recordList.size()) {cout << "Index does not exist, please enter again: ";}
+          else {delete_record(income,expense,budget,recordList,methodList,typeList,i);return;}
+        }
+        else {cout << "Invalid input,please Enter again: ";}
+      }
+    }
+  } 
+  cout<<endl<< "Please enter the corresponding index to delete record(press Enter to Exit): ";
+  while (true)
+  {
+    getline(cin,option);
+    if (option=="") {return;}
+    else if (int_check(option)) 
+    {
+      int i= stoi(option);
+      if (i>=recordList.size()) {cout << "Index does not exist, please enter again: ";}
+      else {delete_record(income,expense,budget,recordList,methodList,typeList,i); cout<<"Record deleted successfully"<<endl;return;}
+    }
+    else {cout << "Invalid input,please Enter again: ";}
+  }
 }
 
 
