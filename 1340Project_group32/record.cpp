@@ -77,7 +77,8 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
     else if (time_check(time)) {break;}
     else {cout<<"Invalid amount,please enter again: ";}
   }
-  time=time.substr(0,4)+"-"+time.substr(4,2)+"-"+time.substr(6,2);
+  time=time.substr(0,4)+"-"+time.substr(4,2)+"-"+time.substr(6,2);  
+  //The format of date is YYYY-MM-DD when stored in recordList
   transform_lower(time);
 
   cout<<"Please enter the type of expense/income: ";
@@ -100,7 +101,8 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   transform_lower(method);
 
   cout<<"Please add some remark to the record: ";
-  getline(cin,remark);
+  getline(cin,remark); 
+  //Remark can be empty
   transform_lower(remark);
 }
 
@@ -123,8 +125,8 @@ void add(vector<Record> &recordList, map <string,int> &typeList, map<string,int>
   temp.set_method(method);
   temp.set_remark(remark);
   recordList.push_back(temp);
-  List_fill(typeList,type);
-  List_fill(methodList,method);
+  List_fill(typeList,type);  //update the typeList
+  List_fill(methodList,method);  //update the methodList
   cout<<"Record successfully added"<<endl;
 }
 //************************End of addition function*****************************************
@@ -152,27 +154,27 @@ void show_menu()
 
 void show_record(vector<Record> &recordList,int &i)
 {
-  ios init(NULL);
-  init.copyfmt(cout);
+  ios init(NULL);  
+  init.copyfmt(cout);  //store the default output format
   cout<<"  "<<left<<setw(6)<<i;
   cout<<setw(1)<<" "<<setw(8)<<(recordList[i]).get_amount();
   cout<<setw(10)<<(recordList[i]).get_time();
   cout<<setw(6)<<"      "<<setw(18)<<(recordList[i]).get_type();
   cout<<setw(2)<<"  "<<setw(20)<<(recordList[i]).get_method()<<setw(2)<<"  ";
-  cout.copyfmt(init);
+  cout.copyfmt(init);  //restore the default output format
   cout<<left<<(recordList[i]).get_remark()<<endl;
 }
 
-void show_header()
+void show_header()  //show the header when showing Records
 {
   cout << endl;
   cout<<left<<setw(5)<<"Index"<<setw(3)<<"   "<<setw(6)<<"Amount"<<setw(6)<<"      "<<setw(8)<<"Date"<<setw(5)<<"   "<<setw(20)<<"Type"<<setw(22)<<"Method"<<setw(6)<<"Remark"<<endl;
 }
 
 
-void sort_time(vector<Record> &recordList)
+void sort_time(vector<Record> &recordList)  //show by time
 {
-  sort(recordList.begin(),recordList.end(),compareTime);
+  sort(recordList.begin(),recordList.end(),compareTime);  //sort the vector according to time
   show_header();
   int i=0,count=0;
   string option;
@@ -180,7 +182,7 @@ void sort_time(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5&& i!=recordList.size())
+    if (count==5&& i!=recordList.size())  //each page has 5 records at most
     {
       cout << endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
@@ -196,7 +198,7 @@ void sort_time(vector<Record> &recordList)
 }
 
 
-void sort_amount(vector<Record> &recordList)
+void sort_amount(vector<Record> &recordList)  //show by amount
 {
   sort(recordList.begin(),recordList.end(),compareAmount);
   int negative_index=recordList.size();  //The index of the first negative number
@@ -207,7 +209,7 @@ void sort_amount(vector<Record> &recordList)
   {
     show_record(recordList,i);
     i++,count++;
-    if (count==5&& i!=recordList.size())
+    if (count==5&& i!=recordList.size()) //if i==recordList.size(),this means the last record has been shown, no need to view next page
     {
       cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
@@ -221,12 +223,14 @@ void sort_amount(vector<Record> &recordList)
     }
     if (recordList[i].get_amount()<0) {negative_index=i; i=recordList.size()-1; break;}
   }
-
+  // show from the +(biggest) to +(smallest)
+  
+  // then show from the -(biggest) to -(smallest)
   while (i>=negative_index)
   {
     show_record(recordList,i);
     i--;count++;
-    if (count==5&& i!=negative_index-1)
+    if (count==5&& i!=negative_index-1)  // if i==negative_index-1, this means the last record has been shown, no need to view next page
     {
       cout<<endl;
       cout << "Please Enter n to view next page, press Enter to Exit: ";
@@ -241,7 +245,7 @@ void sort_amount(vector<Record> &recordList)
   }
 }
 
-void sort_method(vector<Record> &recordList)
+void sort_method(vector<Record> &recordList)  //show by method,Lexicographical order
 {
   sort(recordList.begin(),recordList.end(),compareMethod);
   show_header();
@@ -266,7 +270,7 @@ void sort_method(vector<Record> &recordList)
   }
 }
 
-void sort_type(vector<Record> &recordList)
+void sort_type(vector<Record> &recordList)  //show by type, Lexicographical order
 {
   sort(recordList.begin(),recordList.end(),compareType);
   show_header();
@@ -291,7 +295,7 @@ void sort_type(vector<Record> &recordList)
   }
 }
 
-void search_time(vector<Record> &recordList)
+void search_time(vector<Record> &recordList)  //search by date
 {
   cout << endl;
   cout << "Please enter a time interval you want to search for" << endl;
@@ -307,7 +311,7 @@ void search_time(vector<Record> &recordList)
     getline (cin,starttime);
     if (starttime=="") {return;}
   }
-  if (starttime=="0") {starttime = "00000000";}
+  if (starttime=="0") {starttime = "00000000";}  //starttime will be smaller than any "time"
   starttime=starttime.substr(0,4)+"-"+starttime.substr(4,2)+"-"+starttime.substr(6,2);
 
   cout << "End time: ";
@@ -319,11 +323,11 @@ void search_time(vector<Record> &recordList)
     getline (cin,endtime);
     if (endtime=="") {return;}
   }
-  if (endtime=="0") {endtime = "99999999";}
+  if (endtime=="0") {endtime = "99999999";}  //endtime will be greater than any "time"
   endtime=endtime.substr(0,4)+"-"+endtime.substr(4,2)+"-"+endtime.substr(6,2);
 
   show_header();
-  for (int i=0;i<recordList.size();i++)  //assume it is a vector
+  for (int i=0;i<recordList.size();i++)
   {
     if (recordList[i].get_time()>=starttime && recordList[i].get_time()<=endtime)
     {
@@ -358,8 +362,8 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
     if (high=="") {return;}
   }
   float l,h;
-  if (low=="0") {l=-99999999;} else{l=stof(low);}
-  if (high=="0") {h=99999999;} else {h=stof(high);}
+  if (low=="0") {l=-99999999;} else {l=stof(low);}  //set l to a very small amount
+  if (high=="0") {h=99999999;} else {h=stof(high);}  //set h to a very huge amount
 
   show_header();
   for (int i=0;i<recordList.size();i++)  //assume it is a vector
@@ -369,7 +373,7 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
   }
 }
 
-void search_method(vector<Record> &recordList,map<string,int> &methodList)
+void search_method(vector<Record> &recordList,map<string,int> &methodList)  //search according to method
 {
   cout << endl;
   cout << "These are the existing method:" << endl;  cout<<endl;
@@ -382,7 +386,7 @@ void search_method(vector<Record> &recordList,map<string,int> &methodList)
   getline(cin,method);
   transform_lower(method);  //transform "method" into lower case
   show_header();
-  for (int i=0;i<recordList.size();i++)  //assume it is a vector
+  for (int i=0;i<recordList.size();i++)
   {
     if (recordList[i].get_method() == method)
     {show_record(recordList,i);}
@@ -394,28 +398,29 @@ void search_type(vector<Record> &recordList,map<string,int> &typeList)
   cout << "These are the existing type:" << endl;
   map <string,int>::iterator itr;
   for (itr=typeList.begin();itr!=typeList.end();itr++)
-  {cout << (*itr).first << "  |  ";}  //showing existing type
+  {cout << (*itr).first << "  |  ";}  //showing existing type, use "|" as a delimiter
   cout << endl;
   cout << "Please enter a type you want to search for(press Enter to exit): ";
   string type;
   getline(cin,type);
   transform_lower(type);  //transform "type" into lower case
   show_header();
-  for (int i=0;i<recordList.size();i++)  //assume it is a vector
+  for (int i=0;i<recordList.size();i++)
   {
     if (recordList[i].get_type() == type)
     {show_record(recordList,i);}
   }
 }
 
-void update_map(map<string,int> &m,string key,int change)
+void update_map(map<string,int> &m,string key,int change)  //used to update methodList and typeList
+// methodList and typeList are map<string,int>, used to store a method/type and its corresponding count
 {
-  if (change==1)
+  if (change==1)  //if a record of this method/type is added
   {
     if (m.count(key)==0) {m[key]=1;}
     else {m[key]+=1;}
   }
-  else if (change==-1)
+  else if (change==-1)  //if a record of this method/type is deleted
   {
     if (m[key]==1) {m.erase(key);}
     else {m[key]-=1;}
@@ -427,7 +432,7 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
   string option;
   cout << endl;
   show_record(recordList,i); cout<<endl;
-  cout << "Please edit the record, if you want to keep the origin data, please Enter 0" << endl<<endl;
+  cout << "Please edit the record, if you want to keep the origin data, please Enter 0 (press Enter to Exit)" << endl<<endl;
   cout << "Please enter the Amount(positive number means income, negative number means expense): ";
   while (true)
   {
@@ -438,11 +443,11 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     {
       float oldamount = recordList[i].get_amount();
       float newamount = stof(option);
-      if (oldamount<0) {expense+=oldamount;}  //because the expense here is positive
+      if (oldamount<0) {expense+=oldamount;}  //because the expense here is positive, oldamount is a negative number, here is to decrease expense
       else if (oldamount>0) {income-=oldamount;}
       if (newamount<0)
       {
-        expense-=newamount;
+        expense-=newamount; //because the expense here is positive, oldamount is a negative number, here is to increase expense
         if (expense>=budget) {cout<<"The current expense is: "<<expense<< " ,You have exceeded the budget of "<<budget<<endl;}
       }
       else if (newamount>0) {income+=newamount;}
@@ -518,12 +523,11 @@ void edit_mode(float &income,float &expense,float &budget,vector<Record> &record
   show_header();
   int i=0,count=0;
 
-  //sort_time(recordList); cout<<endl;
   while (i<recordList.size())
   {
     show_record(recordList,i);
     i++; count++;
-    if (count==5&& i!=recordList.size())
+    if (count==5&& i!=recordList.size())  //edit_mode also has "view next page" function
     {
       cout << endl;
       cout << "Please enter the corresponding index to edit record, enter n to view next page(press Enter to Exit): ";
@@ -563,10 +567,10 @@ void delete_record(float &income,float &expense,float &budget,vector<Record> &re
   if (oldamount<0) {expense-=oldamount;}
   else if (oldamount>0) {income-=oldamount;}
   string oldmethod = recordList[i].get_method();
-  update_map(methodList,oldmethod,-1);
+  update_map(methodList,oldmethod,-1);  //update the methodList
   string oldtype = recordList[i].get_type();
-  update_map(typeList,oldtype,-1);
-  recordList.erase(recordList.begin()+i);
+  update_map(typeList,oldtype,-1);  //update the typeList
+  recordList.erase(recordList.begin()+i);  //use iterator to erase this record
 }
 
 
