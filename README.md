@@ -25,5 +25,11 @@ Users could view their records by **date, type, and account**; They could search
 <br><br>
 ### 4) User Interface:
 A total of **two** line user interfaces will be displayed during the execution of the program.<br><br>The first one is the login interface where users would input **username and password** to log in to the system. They can also **register** their account in this interface.<br><br>The second interface is the main **functionality displace interface** where users would choose to execute different functions of this system.<br><br> Assumption: users may input invalid input during their operation, which requires an input-protected system to block those invalid input and ask users to **re-enter** their input.<br><br>
-The system would provide a **statistical report** of users’ financial state (e.g. monthly income and expenses, percentage of food expenses) <br><br>
+The system would provide a **statistical report** of users’ financial state (e.g. monthly income and expenses, percentage of food expenses). The report would also be shown in the form of graphs.<br><br> 
 The accounting system allows **budget setting**. The user would be able to set maximum expense. When expenses reach the budget, there should be an alert from the system.
+
+### 5)Some notes on operating this system:
+1. At most of the time, the system could be stopped and returned to the menu by inputting nothing and pressing Enter(except for adding records). <br><br>
+2. The system allows **NOT CHANGING** the record by entering 0 when editing the records. It also allows **Searching from/until the lower/upper bound** by entering 0 when searching records by **Amount/Date**.  <br><br>
+3. When showing the records, if the type/method/remark is **TOO LONG** or there are **TOO MANY** kinds of them, there might be problems in output formatting. In this project, we assume the users would not input too long or too many kinds of records.
+
