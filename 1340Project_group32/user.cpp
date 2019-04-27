@@ -48,6 +48,15 @@ void create_usertxt(){
 // End of the initializaiton function
 //Registration function
 
+//helper function
+// check whether the password contain the seperator '#' in users.txt file 
+bool password_check(string &password){
+  for (int i=0;i<password.size();i++){
+    if (password[i]=='#'){return 0;}
+  }
+  return 1;
+}
+
 /* register account and record it in to the file*/
 void registeraccount(){
   string username;
@@ -65,6 +74,10 @@ void registeraccount(){
       // prompt user to set his password
       cout<<"please settle your password: ";
       getline(cin,password);
+      if (!password_check(password)){
+        cout<<"Password should not contain #"<<endl;
+        continue;
+      }
       ofstream File ("users.txt",ofstream::app);
       ofstream RecordFile ((username+"_record.txt").c_str());
       if (File.fail()){
@@ -117,13 +130,13 @@ bool authentification(string &login_user,string &user_password,float &budget,flo
   string userdata;
   cout<<"********************************************************************************************************"<<endl;
   cout<<"Login:"<<endl;
-  cout<<"Please enter your username: ";
+  cout<<"Please enter your username (Press Enter to Exit): ";
   while (true){
     getline(cin,username);
     // To check whether inputed username exist in the users.txt file
     //and extract that specific line in the users.txt for use
     if (username_find(userrecord,username)){
-      cout<<"Please enter the password: ";
+      cout<<"Please enter the password (Press Enter to Exit): ";
       getline(cin,password);
       int extract_length=username.size()+password.size()+1;
       if ((userrecord.find(username+"#"+password)==0) and (userrecord.substr(extract_length,1)=="#")){
@@ -147,12 +160,11 @@ bool authentification(string &login_user,string &user_password,float &budget,flo
         expense=stof(userrecord.substr(0,userrecord.find("#")));
         return 1;
       }
-      else{
-        cout<<"Incorrect password,please enter username again(press Enter to return to main menu): ";
-      }
+      else if (username==""){return 0;}
+      else{cout<<"Incorrect password,please enter username again(press Enter to return to main menu): ";}
     }
     // press Enter to return to previous menu
-    else if (username.size()==0){return 0;}
+    else if (username==""){return 0;}
     else{cout<<"User name not found,please enter username again(press Enter to return to main menu): ";}
   }
 }
@@ -290,22 +302,24 @@ void change_password(string &login_user,string &user_password){
    // Authetification process to allow user to retype username and password to verify its identity
    while (true){
     getline(cin,username);
-    if (username==""){return;}
     if (username==login_user){
       cout<<"Please enter the old password: ";
       getline(cin,password);
-      if (password==user_password){
-        break;
-      }
+      if (password==user_password){break;}
       else{cout<<"Incorrect password, please enter the username again(Press Enter to Exit):";}
     }
-    else{cout<<"Incorrect password, please enter the username again(Press Enter to Exit):";}
+    else if (username==""){return;}
+    else{cout<<"Incorrect username, please enter the username again(Press Enter to Exit):";}
   }
   // set new password 
   string password_1,password_2;
   while (true){
     cout<<"Please enter your new password: ";
     getline(cin,password_1);
+    if (!password_check(password)){
+        cout<<"Password should not contain #"<<endl;
+        continue;
+      }
     cout<<"Please enter your new password again: ";
     getline(cin,password_2);
     if (password_1==password_2){
