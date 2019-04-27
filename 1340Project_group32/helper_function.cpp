@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -35,7 +34,7 @@ bool username_check (string username){
   string file_line;
   while (getline(fin,file_line)){
     if ((file_line.find(username)==0) and (file_line.substr(username.size(),1)=="#")){
-      cout<<"This username has been registered by someone else,please try another one: ";
+      cout<<"This username has been registered by someone else,please try another one"<<endl;
       return 0;
     }
   }

@@ -75,7 +75,7 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
     getline(cin,time);
     if (time=="") {cout << "Time cannot be empty, please enter again: "; continue;}
     else if (time_check(time)) {break;}
-    else {cout<<"Invalid amount,please enter again: ";}
+    else {cout<<"Invalid time format,please enter again: ";}
   }
   time=time.substr(0,4)+"-"+time.substr(4,2)+"-"+time.substr(6,2);  
   //The format of date is YYYY-MM-DD when stored in recordList
@@ -139,10 +139,10 @@ void show_menu()
   cout << endl;
   cout << "***********************************************************************************************" << endl;
   cout << "You are now asking to show Records" << endl;
-  cout << "1.show by Date" << endl;
-  cout << "2.show by Amount" << endl;
-  cout << "3.show by Method" << endl;
-  cout << "4.show by Type" << endl;
+  cout << "1.sort by Date" << endl;
+  cout << "2.sort by Amount" << endl;
+  cout << "3.sort by Method" << endl;
+  cout << "4.sort by Type" << endl;
   cout << "5.search by Date" << endl;
   cout << "6.search by Amount" << endl;
   cout << "7.search by Method" << endl;
@@ -174,6 +174,8 @@ void show_header()  //show the header when showing Records
 
 void sort_time(vector<Record> &recordList)  //show by time
 {
+  cout<<endl;
+  if (recordList.size()==0) {cout << "No existing records" <<endl; return;} 
   sort(recordList.begin(),recordList.end(),compareTime);  //sort the vector according to time
   show_header();
   int i=0,count=0;
@@ -200,9 +202,12 @@ void sort_time(vector<Record> &recordList)  //show by time
 
 void sort_amount(vector<Record> &recordList)  //show by amount
 {
+  cout<<endl;
+  if (recordList.size()==0) {cout << "No existing records" <<endl; return;} 
   sort(recordList.begin(),recordList.end(),compareAmount);
-  int negative_index=recordList.size();  //The index of the first negative number
+  int negative_index=recordList.size()+1;  //The index of the first negative number, initialize it to a big number
   show_header();
+  if (recordList.size()==0) {return;}  //to avoid bugs when there is no record
   int i=0,count=0;
   string option;
   while (i<recordList.size())
@@ -221,7 +226,7 @@ void sort_amount(vector<Record> &recordList)  //show by amount
         else {cout << "Invalid input,please Enter again: ";}
       }
     }
-    if (recordList[i].get_amount()<0) {negative_index=i; i=recordList.size()-1; break;}
+    if (i<recordList.size() && recordList[i].get_amount()<0) {negative_index=i; i=recordList.size()-1; break;}  //i must be less than recordList.size() to avoid out-of-range indexing
   }
   // show from the +(biggest) to +(smallest)
   
@@ -247,6 +252,8 @@ void sort_amount(vector<Record> &recordList)  //show by amount
 
 void sort_method(vector<Record> &recordList)  //show by method,Lexicographical order
 {
+  cout<<endl;
+  if (recordList.size()==0) {cout << "No existing records" <<endl; return;} 
   sort(recordList.begin(),recordList.end(),compareMethod);
   show_header();
   int i=0,count=0;
@@ -298,6 +305,7 @@ void sort_type(vector<Record> &recordList)  //show by type, Lexicographical orde
 void search_time(vector<Record> &recordList)  //search by date
 {
   cout << endl;
+  if (recordList.size()==0) {cout << "No existing records" <<endl; return;} 
   cout << "Please enter a time interval you want to search for" << endl;
   cout << "The format is YYYYMMDD, press Enter to exit" << endl;
   cout << "Enter 0 to show from the earliest/latest time" << endl;
@@ -339,6 +347,7 @@ void search_time(vector<Record> &recordList)  //search by date
 void search_amount(vector<Record> &recordList)  //search according to an amount interval
 {
   cout << endl;
+  if (recordList.size()==0) {cout << "No existing records" <<endl; return;} 
   cout << "Please enter an amount interval you want to search for (press Enter to exit)" << endl;
   cout << "Enter 0 to show from/until the lowest/highest amount" << endl;
   string low,high;
@@ -376,10 +385,12 @@ void search_amount(vector<Record> &recordList)  //search according to an amount 
 void search_method(vector<Record> &recordList,map<string,int> &methodList)  //search according to method
 {
   cout << endl;
+  if (methodList.size()==0) {cout << "No existing records" <<endl; return;}  //to avoid bugs when methodList is empty
   cout << "These are the existing method:" << endl;  cout<<endl;
   map <string,int>::iterator itr;
-  for (itr = methodList.begin();itr!=methodList.end();itr++)
+  for (itr = methodList.begin();itr!=--methodList.end();itr++)  
   {cout << itr->first << "  |  ";}  //showing existing method
+  cout << (*itr).first;  //The last existing method would not be followed by a |
   cout << endl;
   cout << "Please enter a method you want to search for(press Enter to exit): ";
   string method;
@@ -395,10 +406,13 @@ void search_method(vector<Record> &recordList,map<string,int> &methodList)  //se
 
 void search_type(vector<Record> &recordList,map<string,int> &typeList)
 {
-  cout << "These are the existing type:" << endl;
+  cout << endl;
+  if (typeList.size()==0) {cout << "No existing records" <<endl; return;}  //to avoid bugs when typeList is empty
+  cout << "These are the existing type:" << endl; cout<<endl;
   map <string,int>::iterator itr;
-  for (itr=typeList.begin();itr!=typeList.end();itr++)
+  for (itr=typeList.begin();itr!=--typeList.end();itr++)
   {cout << (*itr).first << "  |  ";}  //showing existing type, use "|" as a delimiter
+  cout << (*itr).first;  //The last existing type would not be followed by a |
   cout << endl;
   cout << "Please enter a type you want to search for(press Enter to exit): ";
   string type;
@@ -430,7 +444,6 @@ void update_map(map<string,int> &m,string key,int change)  //used to update meth
 void edit_record(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList,int i)
 {
   string option;
-  cout << endl;
   show_record(recordList,i); cout<<endl;
   cout << "Please edit the record, if you want to keep the origin data, please Enter 0 (press Enter to Exit)" << endl<<endl;
   cout << "Please enter the Amount(positive number means income, negative number means expense): ";
@@ -517,6 +530,8 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
 
 void edit_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
+  cout<<endl;
+  if (recordList.size()==0) {cout << "No existing records" <<endl; return;} 
   string option;
   sort(recordList.begin(),recordList.end(),compareTime);
   cout << "You are now in the edit mode" << endl << endl;
@@ -576,6 +591,8 @@ void delete_record(float &income,float &expense,float &budget,vector<Record> &re
 
 void delete_mode(float &income,float &expense,float &budget,vector<Record> &recordList,map<string,int> &methodList, map<string,int> &typeList)
 {
+  cout<<endl;
+  if (recordList.size()==0) {cout << "No existing records" <<endl; return;} 
   string option;
   sort(recordList.begin(),recordList.end(),compareTime);
   cout << "You are now in the delete mode" << endl << endl;
@@ -640,7 +657,7 @@ void show(float &income,float &expense,float &budget,vector<Record> &recordList,
     else if(choice=="") {break;}
     else if(choice=="d") {delete_mode(income,expense,budget,recordList,methodList,typeList);}
     else if(choice=="e") {edit_mode(income,expense,budget,recordList,methodList,typeList);}
-    else {cout << "Invalid option,please enter again: ";}
+    else {cout << "Invalid option,please enter again";}
   }
 }
 
