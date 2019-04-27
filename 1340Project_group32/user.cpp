@@ -315,8 +315,8 @@ void change_password(string &login_user,string &user_password){
   while (true){
     cout<<"Please enter your new password: ";
     getline(cin,password_1);
-    if (!password_check(password)){
-        cout<<"Password should not contain #"<<endl;
+    if (!password_check(password) || password_1=="" ){
+        cout<<"Invalid password"<<endl;
         continue;
       }
     cout<<"Please enter your new password again: ";
