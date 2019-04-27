@@ -157,7 +157,7 @@ void Show_Income_Expense_ByType(vector <Record> &recordList,map <string,int> &ty
   // print the menu to give user choice about the format to display
   cout<<"1.View by graph"<<endl;
   cout<<"2.View by Text"<<endl;
-  cout<<"Please input your choice (Press Enter to exit)";
+  cout<<"Please input your choice (Press Enter to exit) :";
   getline(cin,choice);
   while (true){
     // show by graph
@@ -175,7 +175,7 @@ void Show_Income_Expense_ByType(vector <Record> &recordList,map <string,int> &ty
       return;
     }
     else if (choice==""){return;}
-    else {cout<<"Invalid input, please enter again: ";getline(cin,choice);}
+    else {cout<<"Invalid input, please enter again :";getline(cin,choice);}
   }
 }
 
@@ -207,7 +207,7 @@ void Show_Income_Expense_ByMethod(vector <Record> &recordList,map <string,int> &
   // the user would choice to view by graph and text
   cout<<"1.View by graph"<<endl;
   cout<<"2.View by Text"<<endl;
-  cout<<"Please input your choice (Press Enter to exit)";
+  cout<<"Please input your choice (Press Enter to exit) :";
   getline(cin,choice);
   while (true){
     // to show in graph format
@@ -428,7 +428,7 @@ void Show_Income_Expense_ByMonth(vector <Record> &recordList){
   string choice;
   cout<<"1.View by Graph"<<endl;
   cout<<"2.View by Text"<<endl;
-  cout<<"Please input your choice (Press Enter to exit)";
+  cout<<"Please input your choice (Press Enter to exit): ";
   getline(cin,choice);
   while (true){
     //view by graph
