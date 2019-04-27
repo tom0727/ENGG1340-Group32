@@ -51,10 +51,8 @@ void create_usertxt(){
 //helper function
 // check whether the password contain the seperator '#' in users.txt file 
 bool password_check(string &password){
-  for (int i=0;i<password.size();i++){
-    if (password[i]=='#'){return 0;}
-  }
-  return 1;
+  if (password.find("#")==-1){return 1;}
+  else {return 0;}
 }
 
 /* register account and record it in to the file*/
@@ -72,12 +70,13 @@ void registeraccount(){
     // i.e. only contain number and alphabet character
     if (username_check(username)==true){
       // prompt user to set his password
-      cout<<"please settle your password: ";
+      cout<<"please settle your password (Press Enter to Exit): ";
       getline(cin,password);
       if (!password_check(password)){
         cout<<"Password should not contain #"<<endl;
         continue;
       }
+      else if (password==""){return;}
       ofstream File ("users.txt",ofstream::app);
       ofstream RecordFile ((username+"_record.txt").c_str());
       if (File.fail()){
