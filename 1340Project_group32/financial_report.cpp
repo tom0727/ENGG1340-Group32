@@ -55,7 +55,7 @@ void print_graph (map <float,string> &datamap,float &income,float &expense,strin
     // print the bar chart of different category's income
     cout<<"Income Percentage"<<endl;
     cout<<"A"<<endl;
-    for (int j=21;j>=0;j--){
+    for (int j=22;j>=0;j--){
       cout<<"I";
       if (j%4==3){
         cout<<setw(3)<<(j+1)*5<<"%     ";
@@ -94,7 +94,7 @@ void print_graph (map <float,string> &datamap,float &income,float &expense,strin
    cout<<"Expense Percentage"<<endl;
    cout<<"A"<<endl;
    cout<<"I"<<endl;
-   for (int j=21;j>=0;j--){
+   for (int j=22;j>=0;j--){
      cout<<"I";
      if (j%4==3){
        cout<<setw(3)<<(j+1)*5<<"%     ";
@@ -305,7 +305,7 @@ void print_graph2 (map <string,float> &timemap_income,map <string,float> &timema
     // print the bar chart of the monthly income first
     cout<<"Income Percentage"<<endl;
     cout<<"A"<<endl;
-    for (int j=21;j>=0;j--){
+    for (int j=22;j>=0;j--){
       cout<<"I";
       if (j%4==3){
         cout<<setw(3)<<(j+1)*5<<"%     ";
@@ -339,7 +339,7 @@ void print_graph2 (map <string,float> &timemap_income,map <string,float> &timema
    cout<<"Expense Percentage"<<endl;
    cout<<"A"<<endl;
    cout<<"I"<<endl;
-   for (int j=21;j>=0;j--){
+   for (int j=22;j>=0;j--){
      cout<<"I";
      if (j%4==3){
        cout<<setw(3)<<(j+1)*5<<"%     ";
