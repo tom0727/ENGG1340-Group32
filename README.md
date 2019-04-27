@@ -21,7 +21,8 @@ When users log in to his account, his information will be **loaded** from his ac
 ### 3)    add records of income and expenses:
 Users could add many attributes of each income or expenses record.<br><br>Attributes include basic information such as **amount, date, type, remarks**, etc.<br><br>This information will be stored inside the users' specific file after the program terminates and would be extracted from the file when program reactivate.<br><br>
 The records could be **deleted and edited** at any time and file stored corresponding information would be updated accordingly.<br><br>
-Users could view their records by **date, type, and account**; They could search for each **record** by its **date, type, account**, and other attributes.<br><br>Users may also provide incomplete information about each attribute and still able to search for records.
+Users could view their records by **date, type, and account**; They could search for each **record** by its **date, type, account**, and other attributes.<br><br>Users may also provide incomplete information about each attribute and still able to search for records. <br><br>
+**Note:** "Type" means the usage of money, i.e. What this money is used for (e.g. food, taxi, party, game). "Method" means the payment method (e.g. cash, creditcard, cheque).
 <br><br>
 ### 4) User Interface:
 A total of **two** line user interfaces will be displayed during the execution of the program.<br><br>The first one is the login interface where users would input **username and password** to log in to the system. They can also **register** their account in this interface.<br><br>The second interface is the main **functionality displace interface** where users would choose to execute different functions of this system.<br><br> Assumption: users may input invalid input during their operation, which requires an input-protected system to block those invalid input and ask users to **re-enter** their input.<br><br>
