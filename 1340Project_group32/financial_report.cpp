@@ -1,14 +1,3 @@
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include <fstream>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
-#include <algorithm>
-#include <math.h>
-#include <map>
 #include "headerfile.h"
 using namespace std;
 //print the menu of the financial report function
@@ -66,14 +55,14 @@ void print_graph (map <float,string> &datamap,float &income,float &expense,strin
       // print the bar
       for (map <float,string >::iterator itr=datamap.begin();itr!=datamap.end();itr++){
         if (itr->first<0){continue;}
-        if ((itr->first/income)>=j*0.05){
+        if ((itr->first/income)>j*0.05){
           cout<<"**";
           cout<<"        ";
         }
         // print number in the top of the bar to show the persentagen of that type with respect to total income
         // and the absolute value of that type of income
         else if ((j*0.05-(itr->first/income))<0.05){cout<<fixed<<setprecision(1)<<to_percentage((itr->first)/income)<<"%     ";}
-        else if (j*0.05-(itr->first/income)<0.10 && j*0.05-(itr->first/income)>0.05){cout<<fixed<<left<<setprecision(1)<<setw(10)<<itr->first;}
+        else if (j*0.05-(itr->first/income)<0.10 && j*0.05-(itr->first/income)>=0.05){cout<<fixed<<left<<setprecision(1)<<setw(10)<<itr->first;}
         else{cout<<"          ";};
       }
       cout<<endl;
@@ -105,14 +94,14 @@ void print_graph (map <float,string> &datamap,float &income,float &expense,strin
      // print the bar
      for (map <float,string >::iterator itr=datamap.begin();itr!=datamap.end();itr++){
        if (itr->first>0){continue;}
-       if ((itr->first/expense)<=(j*-0.05)){
+       if ((itr->first/expense)<(j*-0.05)){
          cout<<"**";
          cout<<"        ";
        }
        // print number in the top of the bar to show the persentagen of that type with respect to total income
        // and the absolute value of that type of income
        else if ((itr->first/expense)+j*0.05<0.05){cout<<fixed<<setprecision(1)<<to_percentage(-(itr->first)/expense)<<"%     ";}
-       else if ((itr->first/expense)+j*0.05<0.10 && (itr->first/expense)+j*0.05>0.05){cout<<fixed<<left<<setprecision(1)<<setw(10)<<-itr->first;}
+       else if ((itr->first/expense)+j*0.05<0.10 && (itr->first/expense)+j*0.05>=0.05){cout<<fixed<<left<<setprecision(1)<<setw(10)<<-itr->first;}
        else{cout<<"          ";};
      }
      cout<<endl;
@@ -175,7 +164,7 @@ void Show_Income_Expense_ByType(vector <Record> &recordList,map <string,int> &ty
       return;
     }
     else if (choice==""){return;}
-    else {cout<<"Invalid input, please enter again :";getline(cin,choice);}
+    else {cout<<"Invalid input, please enter again: ";getline(cin,choice);}
   }
 }
 
@@ -377,7 +366,7 @@ void print_graph2 (map <string,float> &timemap_income,map <string,float> &timema
 void Show_Income_Expense_ByMonth(vector <Record> &recordList){
   cout << endl;
   cout << "Please enter a monthly time interval you want to search for" << endl;
-  cout << "The format is YYYYMM, press Enter to exit" << endl;
+  cout << "The format is YYYYMM(press Enter to exit)" << endl;
 
   // prompt user to input the starting month
   cout << "Start time: ";
@@ -386,7 +375,7 @@ void Show_Income_Expense_ByMonth(vector <Record> &recordList){
   if (starttime=="") {return;}
   while (!time_check2(starttime))  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again, press Enter to exit" << endl;
+    cout << "Invalid input,please enter again: " << endl;
     getline (cin,starttime);
     if (starttime=="") {return;}
   }
@@ -398,7 +387,7 @@ void Show_Income_Expense_ByMonth(vector <Record> &recordList){
   if (endtime=="") {return;}
   while (!time_check2(endtime))  //time_check function is in another file
   {
-    cout << "Invalid input,please enter again, press Enter to exit" << endl;
+    cout << "Invalid input,please enter again: " << endl;
     getline (cin,endtime);
     if (endtime=="") {return;}
   }

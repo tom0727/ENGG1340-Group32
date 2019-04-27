@@ -1,15 +1,4 @@
 //get the record from user input/ input promotion
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include <fstream>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
-#include <algorithm>
-#include <math.h>
-#include <map>
 #include "headerfile.h"
 using namespace std;
 void Record::set_amount(float newamount)
@@ -85,7 +74,8 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   while (true)
   {
     getline(cin,type);
-    if (type=="") {cout<<"Type can not be empty, please enter again: ";}
+    if (type=="") {cout<<"Type can not be empty, please enter again: ";continue;}
+    else if (type.find("|")!=-1) {cout<<"Contains illegal character, please enter again: ";continue;}  // "|" is a special char in our program, not allowed
     else {break;}
   }
   transform_lower(type);
@@ -96,6 +86,7 @@ void prompt_add_input(float &amount,string &time,string &type,string &method,str
   {
     getline(cin,method);
     if (method=="") {cout<<"Method can not be empty, please enter again: ";}
+    else if (method.find("|")!=-1) {cout<<"Contains illegal character, please enter again: ";continue;}
     else {break;}
   }
   transform_lower(method);
@@ -479,7 +470,7 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     else if (option=="0") {break;}
     else if (time_check(option))
     {recordList[i].set_time(option.substr(0,4)+"-"+option.substr(4,2)+"-"+option.substr(6,2)); break;}
-    else {cout << "Invalid option, please enter again: ";}
+    else {cout << "Invalid time format, please enter again: ";}
   }
 
   cout << "Please enter the Type: ";
@@ -488,6 +479,7 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     getline(cin,option);
     if (option=="") {return;}
     else if (option=="0") {break;}
+    else if (option.find("|")!=-1) {cout<<"Contains illegal character, please enter again: ";continue;}
     else
     {
       string oldtype = recordList[i].get_type();
@@ -506,6 +498,7 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     getline(cin,option);
     if (option=="") {return;}
     else if (option=="0") {break;}
+    else if (option.find("|")!=-1) {cout<<"Contains illegal character, please enter again: ";continue;}
     else
     {
       string oldmethod = recordList[i].get_method();
@@ -523,6 +516,7 @@ void edit_record(float &income,float &expense,float &budget,vector<Record> &reco
     getline(cin,option);
     if (option=="") {return;}
     else if (option=="0") {break;}
+    else if (option.find("|")!=-1) {cout<<"Contains illegal character, please enter again: ";continue;}
     else {recordList[i].set_remark(option); break;}
   }
 }

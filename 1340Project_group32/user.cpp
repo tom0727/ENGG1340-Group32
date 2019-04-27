@@ -1,10 +1,5 @@
 //user.cpp is used for registeration, login, loading, writing data, changing password and
 //other specific user-relevant functions
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include <fstream>
-#include <map>
 #include "headerfile.h"
 using namespace std;
 // print the Login menu
@@ -61,8 +56,8 @@ void registeraccount(){
   string password;
   cout<<"*****************************************************************************************************"<<endl;
   cout<<"Registration:"<<endl;
+  cout<<"Username should only contain Alphabet or digit"<<endl;
   while (true){
-    cout<<"Username should only contain Alphabet or digit"<<endl;
     cout<<"Please settle your username (Press Enter to Exit): ";
     getline(cin,username);
     if (username==""){return;}
@@ -102,7 +97,7 @@ void registeraccount(){
 bool username_find(string &userrecord, string username){
   for (int i=0;i<username.size();i++){
     if (!isalnum(username[i])){
-        cout<<"Invalid username.Username could only consist of digit and Alphabet"<<endl;
+        cout<<"Invalid username. Username could only consist of digit and Alphabet"<<endl;
       return 0;
     }
   }
@@ -129,13 +124,13 @@ bool authentification(string &login_user,string &user_password,float &budget,flo
   string userdata;
   cout<<"********************************************************************************************************"<<endl;
   cout<<"Login:"<<endl;
-  cout<<"Please enter your username (Press Enter to Exit): ";
+  cout<<"Please enter your username(press Enter to exit): ";
   while (true){
     getline(cin,username);
     // To check whether inputed username exist in the users.txt file
     //and extract that specific line in the users.txt for use
     if (username_find(userrecord,username)){
-      cout<<"Please enter the password (Press Enter to Exit): ";
+      cout<<"Please enter the password(press Enter to exit): ";
       getline(cin,password);
       int extract_length=username.size()+password.size()+1;
       if ((userrecord.find(username+"#"+password)==0) and (userrecord.substr(extract_length,1)=="#")){
@@ -191,7 +186,7 @@ void login(string &login_user,string &user_password,float &budget,float &income,
         exit(1);
       }
     else{
-        cout<<"Invalid input, please enter again: (press Enter to exit)";
+        cout<<"Invalid input, please enter again(press Enter to exit): ";
     }
   }
 }
@@ -305,22 +300,24 @@ void change_password(string &login_user,string &user_password){
       cout<<"Please enter the old password: ";
       getline(cin,password);
       if (password==user_password){break;}
-      else{cout<<"Incorrect password, please enter the username again(Press Enter to Exit):";}
+      else{cout<<"Incorrect password, please enter the username again(press Enter to exit): ";}
     }
     else if (username==""){return;}
-    else{cout<<"Incorrect username, please enter the username again(Press Enter to Exit):";}
+    else{cout<<"Incorrect username, please enter the username again(press Enter to exit): ";}
   }
   // set new password 
   string password_1,password_2;
   while (true){
-    cout<<"Please enter your new password: ";
+    cout<<"Please enter your new password(press Enter to exit): ";
     getline(cin,password_1);
-    if (!password_check(password) || password_1=="" ){
-        cout<<"Invalid password"<<endl;
+    if (password_1=="") {return;}
+    if (!password_check(password)){
+        cout<<"Invalid password format"<<endl;
         continue;
       }
     cout<<"Please enter your new password again: ";
     getline(cin,password_2);
+    if (password_2=="") {return;}
     if (password_1==password_2){
       user_password=password_1;
       cout<<"New password will be in effect after log out"<<endl;

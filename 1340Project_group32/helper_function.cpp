@@ -1,14 +1,3 @@
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include <fstream>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
-#include <algorithm>
-#include <math.h>
-#include <map>
 #include "headerfile.h"
 using namespace std;
 bool isalnum(char c) //checking if the char is a Alphabet or number
@@ -70,6 +59,7 @@ bool time_check(string time)  //check if this string is a valid date format
       return 0;
     }
   }
+  if (time[0]=='0') {return 0;}
   if (time.substr(4,2)>"12" or time.substr(4,2)<"01"){ return 0;} //check if "month" is valid
   if (time.substr(6,2)>"31" or time.substr(6,2)<"01"){ return 0;} //check if "day" is valid
   return 1;

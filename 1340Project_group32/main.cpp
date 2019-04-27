@@ -1,14 +1,3 @@
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include <fstream>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
-#include <algorithm>
-#include <math.h>
-#include <map>
 #include "headerfile.h"
 using namespace std;
 
